@@ -16,6 +16,47 @@
             --card-bg: rgba(255, 255, 255, 0.03);
         }
 
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        .gradient-sphere {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, var(--accent-color) 0%, transparent 70%);
+            filter: blur(60px);
+            animation: float 20s infinite ease-in-out;
+            opacity: 0.15;
+        }
+
+        .gradient-sphere:nth-child(1) {
+            top: -200px;
+            left: -200px;
+            animation-delay: 0s;
+        }
+
+        .gradient-sphere:nth-child(2) {
+            bottom: -200px;
+            right: -200px;
+            animation-delay: -10s;
+            background: radial-gradient(circle at center, #9d4edd 0%, transparent 70%);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, 50px) scale(1.1); }
+            50% { transform: translate(0, 100px) scale(1); }
+            75% { transform: translate(-50px, 50px) scale(0.9); }
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -176,9 +217,41 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        .back-button {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            background: var(--background-color);
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            background: var(--card-bg);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
+    <div class="background-animation">
+        <div class="gradient-sphere"></div>
+        <div class="gradient-sphere"></div>
+    </div>
+    <a href="index.html" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Back to Main
+    </a>
     <div class="container">
         <header>
             <h1>School Tasks</h1>
