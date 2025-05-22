@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>neol1no</title>
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+    <style>
+        :root {
+            --primary-color: #ffffff;
+            --secondary-color: #a0a0a0;
+            --accent-color: #9d4edd;
+            --background-color: #0a0a0a;
+            --text-color: #ffffff;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --discord-online: #43b581;
+            --discord-idle: #faa61a;
+            --discord-dnd: #f04747;
+            --discord-offline: #747f8d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            overflow-x: hidden;
+            height: 100%;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-snap-type: y mandatory;
+            height: 100%;
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        .gradient-sphere {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, var(--accent-color) 0%, transparent 70%);
+            filter: blur(60px);
+            animation: float 20s infinite ease-in-out;
+            opacity: 0.15;
+        }
+
+        .gradient-sphere:nth-child(1) {
+            top: -200px;
+            left: -200px;
+            animation-delay: 0s;
+        }
+
+        .gradient-sphere:nth-child(2) {
+            bottom: -200px;
+            right: -200px;
+            animation-delay: -10s;
+            background: radial-gradient(circle at center, #7b2cbf 0%, transparent 70%);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, 50px) scale(1.1); }
+            50% { transform: translate(0, 100px) scale(1); }
+            75% { transform: translate(-50px, 50px) scale(0.9); }
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+        }
+
+        header {
+            text-align: center;
+            padding: 6rem 0 4rem;
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            letter-spacing: -1px;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 8s ease infinite;
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .bio {
+            max-width: 800px;
+            margin: 0 auto 4rem;
+            font-size: 1.2rem;
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideUp 0.8s ease-out 0.3s forwards;
+        }
+
+        @keyframes slideUp {
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .bio p {
+            margin-bottom: 1.5rem;
+        }
+
+        .bio p:last-child {
+            margin-bottom: 0;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 3rem;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out 0.6s forwards;
+        }
+
+        .social-link {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .social-link:hover {
+            color: var(--accent-color);
+            transform: translateY(-2px);
+            border-color: var(--accent-color);
+        }
+
+        .tech-stack {
+            margin: 4rem auto;
+            max-width: 1000px;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out 0.9s forwards;
+        }
+
+        .tech-categories {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            width: 100%;
+        }
+
+        .tech-category {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            height: 100%;
+        }
+
+        .tech-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .tech-items.frontend, .tech-items.tools, .tech-items.backend {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .tech-category h2 {
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tech-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem;
+            border-radius: 12px;
+            background: var(--card-bg);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tech-item:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--accent-color);
+        }
+
+        .tech-icon {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            transition: all 0.3s ease;
+        }
+
+        .tech-item:hover .tech-icon {
+            transform: scale(1.2);
+        }
+
+        .tech-name {
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+            text-align: center;
+        }
+
+        .discord-status {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out 1.2s forwards;
+        }
+
+        .discord-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 3px solid var(--discord-offline);
+        }
+
+        .discord-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .discord-username {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .discord-activity {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--discord-offline);
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            border: 2px solid var(--background-color);
+        }
+
+        .status-online { background: var(--discord-online); }
+        .status-idle { background: var(--discord-idle); }
+        .status-dnd { background: var(--discord-dnd); }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .tech-icon.pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 3rem;
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .bio {
+                padding: 1.5rem;
+                font-size: 1.1rem;
+            }
+
+            .gradient-sphere {
+                width: 400px;
+                height: 400px;
+            }
+
+            .tech-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+
+            .discord-status {
+                bottom: 1rem;
+                right: 1rem;
+                left: 1rem;
+            }
+        }
+
+        .welcome-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3rem;
+            min-height: 100vh;
+            padding: 0 2rem;
+            position: relative;
+        }
+
+        .welcome-text {
+            flex: 1;
+            max-width: 600px;
+        }
+
+        .welcome-gif {
+            flex: 1;
+            max-width: 400px;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .welcome-gif img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .welcome-text h1 {
+            font-size: 4.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color), var(--primary-color));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 3s linear infinite;
+            padding-bottom: 0.2rem;
+        }
+
+        @keyframes gradientFlow {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .welcome-text .subtitle {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+        }
+
+        .discord-status-container {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 2rem;
+            margin: 3rem auto;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out 0.6s forwards;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .discord-status-container iframe {
+            border: none;
+            border-radius: 12px;
+            width: 100%;
+            height: 250px;
+            flex: 1;
+        }
+
+        .location-discord {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            min-width: 250px;
+        }
+
+        .location, .discord-server {
+            width: 100%;
+            justify-content: center;
+            padding: 0.8rem 1.5rem;
+        }
+
+        .location {
+            color: var(--text-color);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .location:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .location i {
+            color: var(--accent-color);
+        }
+
+        .discord-server {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .discord-server:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .discord-server i {
+            color: #5865F2;
+        }
+
+        .bio, .tech-category, .tech-item, .social-link, .location, .discord-server {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+        }
+
+        .tech-item:hover, .social-link:hover, .location:hover, .discord-server:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--secondary-color);
+            font-size: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            animation: float 3s ease-in-out infinite;
+            z-index: 10;
+            opacity: 0.7;
+        }
+
+        .scroll-hint i {
+            font-size: 1.2rem;
+            color: var(--accent-color);
+            opacity: 0.8;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(-50%, 0);
+            }
+            50% {
+                transform: translate(-50%, -10px);
+            }
+        }
+
+        .bio, .tech-stack, .discord-status-container {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .bio.visible, .tech-stack.visible, .discord-status-container.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .footer {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease-out;
+        }
+
+        .footer.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section {
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .welcome-section {
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3rem;
+            padding: 0 2rem;
+            position: relative;
+        }
+
+        .about-section {
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .tech-section {
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .section-indicator {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .section-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            border: 2px solid var(--accent-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .section-dot.active {
+            background: var(--accent-color);
+            transform: scale(1.2);
+        }
+
+        .section-dot:hover {
+            transform: scale(1.2);
+            background: var(--accent-color);
+        }
+
+        @media (max-width: 968px) {
+            .discord-status-container {
+                flex-direction: column;
+            }
+
+            .location-discord {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation">
+        <div class="gradient-sphere"></div>
+        <div class="gradient-sphere"></div>
+    </div>
+
+    <div class="section-indicator">
+        <div class="section-dot active" data-section="welcome"></div>
+        <div class="section-dot" data-section="about"></div>
+        <div class="section-dot" data-section="tech"></div>
+    </div>
+
+    <div class="container">
+        <section id="welcome-section" class="welcome-section">
+            <div class="welcome-text">
+                <h1>Hey, I'm Neo</h1>
+                <p class="subtitle">aspiring software developer</p>
+            </div>
+            <div class="welcome-gif">
+                <img src="https://i.pinimg.com/originals/66/36/d3/6636d37ba22a391c6353b1436a81f656.gif" alt="Neo Matrix GIF">
+            </div>
+            <div class="scroll-hint">
+                <span>Scroll to explore</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </section>
+
+        <section id="about-section" class="section about-section">
+            <div class="bio">
+                <p>Welcome to my digital space! I'm currently a student exploring the world of software development in my free time. While I'm still at the beginning of my journey, I'm passionate about learning and experimenting with different technologies.</p>
+                <p>Most of my time is spent trying out new things, whether it's coding, gaming, or just exploring interesting tech. I believe in learning by doing, so you'll often find me working on random projects or diving into new technologies that catch my interest.</p>
+            </div>
+
+            <div class="discord-status-container">
+                <iframe src="https://lanyard-profile-readme.vercel.app/api/1118534787351711834?bg=0a0a0a&borderRadius=12px&width=800" width="800" height="250"></iframe>
+                <div class="location-discord">
+                    <div class="location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Based in Germany
+                    </div>
+                    <a href="https://discord.gg/TaCumDu36N" class="discord-server" target="_blank">
+                        <i class="fab fa-discord"></i>
+                        Lunar GeoGuessr
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="tech-section" class="section tech-section">
+            <div class="tech-stack">
+                <div class="tech-categories">
+                    <div class="tech-category">
+                        <h2><i class="fas fa-code"></i> Frontend & Web</h2>
+                        <div class="tech-items frontend">
+                            <div class="tech-item">
+                                <i class="fab fa-html5 tech-icon"></i>
+                                <span class="tech-name">HTML5</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fab fa-css3-alt tech-icon"></i>
+                                <span class="tech-name">CSS3</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fab fa-js tech-icon"></i>
+                                <span class="tech-name">JavaScript</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fab fa-react tech-icon"></i>
+                                <span class="tech-name">React</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fab fa-node-js tech-icon"></i>
+                                <span class="tech-name">Node.js</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="devicon-typescript-plain tech-icon"></i>
+                                <span class="tech-name">TypeScript</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="devicon-nextjs-plain tech-icon"></i>
+                                <span class="tech-name">Next.js</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="devicon-vitejs-plain tech-icon"></i>
+                                <span class="tech-name">Vite</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tech-category">
+                        <h2><i class="fas fa-server"></i> Backend & Languages</h2>
+                        <div class="tech-items backend">
+                            <div class="tech-item">
+                                <i class="devicon-python-plain tech-icon"></i>
+                                <span class="tech-name">Python</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="devicon-java-plain tech-icon"></i>
+                                <span class="tech-name">Java</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fab fa-microsoft tech-icon"></i>
+                                <span class="tech-name">.NET</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="devicon-csharp-plain colored tech-icon"></i>
+                                <span class="tech-name">C#</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tech-category">
+                        <h2><i class="fas fa-tools"></i> Tools & Infrastructure</h2>
+                        <div class="tech-items tools">
+                            <div class="tech-item">
+                                <i class="devicon-github-original tech-icon"></i>
+                                <span class="tech-name">GitHub</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="devicon-git-plain tech-icon"></i>
+                                <span class="tech-name">Git</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="devicon-vscode-plain tech-icon"></i>
+                                <span class="tech-name">VSCode</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="devicon-docker-plain tech-icon"></i>
+                                <span class="tech-name">Docker</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="devicon-mysql-plain tech-icon"></i>
+                                <span class="tech-name">MySQL</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            © 2025 by neol1no
+        </footer>
+    </div>
+
+    <script>
+        const observerOptions = {
+            root: null,
+            rootMargin: '-50% 0px',
+            threshold: 0
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Update section indicator
+                    const sectionId = entry.target.id.replace('-section', '');
+                    document.querySelectorAll('.section-dot').forEach(dot => {
+                        dot.classList.remove('active');
+                        if (dot.dataset.section === sectionId) {
+                            dot.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        // Observe all sections
+        document.querySelectorAll('section[id$="-section"]').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Add click handlers for section dots
+        document.querySelectorAll('.section-dot').forEach(dot => {
+            dot.addEventListener('click', () => {
+                const sectionId = dot.dataset.section;
+                const section = document.querySelector(`#${sectionId}-section`);
+                if (section) {
+                    section.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
