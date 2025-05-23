@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Playground - neol1no</title>
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
+    <style>
+        :root {
+            --primary-color: #ffffff;
+            --secondary-color: #a0a0a0;
+            --accent-color: #7c4dff;
+            --background-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: rgba(124, 77, 255, 0.03);
+            --card-hover: rgba(124, 77, 255, 0.1);
+            --editor-bg: #282a36;
+            --console-bg: #1e1e1e;
+            --success-color: #50fa7b;
+            --error-color: #ff5555;
+            --warning-color: #ffb86c;
+            --info-color: #8be9fd;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            overflow-x: hidden;
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(124, 77, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(157, 78, 221, 0.1) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            letter-spacing: -1px;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::before {
+            content: '<';
+            color: var(--accent-color);
+            margin-right: 0.5rem;
+        }
+
+        h1::after {
+            content: '/>';
+            color: var(--accent-color);
+            margin-left: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            background: var(--card-bg);
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 2px solid rgba(124, 77, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            background: var(--card-hover);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .editor-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .editor-wrapper {
+            background: var(--editor-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid rgba(124, 77, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor-header {
+            background: rgba(124, 77, 255, 0.1);
+            padding: 0.8rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid rgba(124, 77, 255, 0.1);
+        }
+
+        .editor-title {
+            color: var(--accent-color);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .editor-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .editor-button {
+            background: var(--card-bg);
+            border: 1px solid rgba(124, 77, 255, 0.2);
+            color: var(--text-color);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .editor-button:hover {
+            background: var(--card-hover);
+            border-color: var(--accent-color);
+        }
+
+        .editor-button i {
+            font-size: 0.9rem;
+        }
+
+        .CodeMirror {
+            flex: 1;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+        }
+
+        .console-wrapper {
+            background: var(--console-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid rgba(124, 77, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            height: 500px;
+        }
+
+        .console-header {
+            background: rgba(124, 77, 255, 0.1);
+            padding: 0.8rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid rgba(124, 77, 255, 0.1);
+        }
+
+        .console-output {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .console-line {
+            margin-bottom: 0.5rem;
+            padding: 0.3rem 0.5rem;
+            border-radius: 4px;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .console-line.log {
+            color: var(--text-color);
+        }
+
+        .console-line.info {
+            color: var(--info-color);
+            background: rgba(139, 233, 253, 0.1);
+        }
+
+        .console-line.warn {
+            color: var(--warning-color);
+            background: rgba(255, 184, 108, 0.1);
+        }
+
+        .console-line.error {
+            color: var(--error-color);
+            background: rgba(255, 85, 85, 0.1);
+        }
+
+        .console-line .timestamp {
+            color: var(--secondary-color);
+            font-size: 0.8rem;
+            min-width: 60px;
+        }
+
+        .console-line .content {
+            flex: 1;
+        }
+
+        .run-button {
+            background: var(--accent-color);
+            color: var(--text-color);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin: 0 auto;
+        }
+
+        .run-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(124, 77, 255, 0.2);
+        }
+
+        .run-button:active {
+            transform: translateY(0);
+        }
+
+        .status-message {
+            text-align: center;
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .status-message.success {
+            background: rgba(80, 250, 123, 0.1);
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+
+        .status-message.error {
+            background: rgba(255, 85, 85, 0.1);
+            color: var(--error-color);
+            border: 1px solid var(--error-color);
+        }
+
+        @media (max-width: 1200px) {
+            .editor-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .CodeMirror, .console-wrapper {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation"></div>
+    <a href="../../projects.html" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Back to Projects
+    </a>
+    <div class="container">
+        <header>
+            <h1>JS Playground</h1>
+            <p class="subtitle">A secure JavaScript playground with console output</p>
+        </header>
+
+        <div class="editor-container">
+            <div class="editor-wrapper">
+                <div class="editor-header">
+                    <div class="editor-title">
+                        <i class="fas fa-code"></i>
+                        Code Editor
+                    </div>
+                    <div class="editor-actions">
+                        <button class="editor-button" id="clearCode">
+                            <i class="fas fa-trash"></i>
+                            Clear
+                        </button>
+                        <button class="editor-button" id="loadExample">
+                            <i class="fas fa-file-code"></i>
+                            Load Example
+                        </button>
+                    </div>
+                </div>
+                <textarea id="codeEditor"></textarea>
+            </div>
+
+            <div class="console-wrapper">
+                <div class="console-header">
+                    <div class="editor-title">
+                        <i class="fas fa-terminal"></i>
+                        Console Output
+                    </div>
+                    <div class="editor-actions">
+                        <button class="editor-button" id="clearConsole">
+                            <i class="fas fa-trash"></i>
+                            Clear Console
+                        </button>
+                    </div>
+                </div>
+                <div class="console-output" id="consoleOutput"></div>
+            </div>
+        </div>
+
+        <button class="run-button" id="runButton">
+            <i class="fas fa-play"></i>
+            Run Code
+        </button>
+
+        <div class="status-message" id="statusMessage"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/matchbrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closebrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/fold/foldcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/fold/foldgutter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/fold/brace-fold.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/fold/comment-fold.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/fold/foldgutter.min.css"></script>
+    <script src="app.js"></script>
+</body>
+</html> 
