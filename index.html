@@ -11,10 +11,13 @@
         :root {
             --primary-color: #ffffff;
             --secondary-color: #a0a0a0;
-            --accent-color: #9d4edd;
-            --background-color: #0a0a0a;
+            --accent-color: #7c4dff;
+            --background-color: #1a1a1a;
             --text-color: #ffffff;
-            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-bg: rgba(124, 77, 255, 0.03);
+            --card-hover: rgba(124, 77, 255, 0.1);
+            --grid-size: 50px;
+            --grid-color: rgba(26, 26, 26, 0.95);
             --discord-online: #43b581;
             --discord-idle: #faa61a;
             --discord-dnd: #f04747;
@@ -51,7 +54,37 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            opacity: 0.4;
+            background-color: var(--background-color);
+            background-image: 
+                linear-gradient(var(--background-color) calc(var(--grid-size) - 1px), var(--grid-color) 1px),
+                linear-gradient(90deg, var(--background-color) calc(var(--grid-size) - 1px), var(--grid-color) 1px);
+            background-size: var(--grid-size) var(--grid-size);
+            opacity: 1;
+        }
+
+        .background-animation::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                var(--accent-color) 0%,
+                transparent 20%
+            );
+            opacity: 0.5;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            mask-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            mask-size: var(--grid-size) var(--grid-size);
+            -webkit-mask-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            -webkit-mask-size: var(--grid-size) var(--grid-size);
         }
 
         .gradient-sphere {
@@ -440,7 +473,7 @@
             min-width: 250px;
         }
 
-        .location, .discord-server {
+        .location, .projects-card {
             width: 100%;
             justify-content: center;
             padding: 0.8rem 1.5rem;
@@ -467,6 +500,51 @@
 
         .location i {
             color: var(--accent-color);
+        }
+
+        .projects-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(124, 77, 255, 0.2);
+            border-radius: 12px;
+            padding: 1.2rem;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .projects-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-color);
+            box-shadow: 0 8px 30px rgba(124, 77, 255, 0.15);
+        }
+
+        .projects-card p {
+            color: var(--secondary-color);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .projects-link {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background: var(--card-hover);
+            border: 1px solid rgba(124, 77, 255, 0.2);
+        }
+
+        .projects-link:hover {
+            background: var(--accent-color);
+            color: var(--background-color);
+            transform: translateY(-2px);
+        }
+
+        .projects-link i {
+            font-size: 1.2rem;
         }
 
         .discord-server {
@@ -682,14 +760,13 @@
                         <i class="fas fa-map-marker-alt"></i>
                         Based in Germany
                     </div>
-                    <a href="https://discord.gg/TaCumDu36N" class="discord-server" target="_blank">
-                        <i class="fab fa-discord"></i>
-                        Lunar GeoGuessr
-                    </a>
-                    <a href="projects.html" class="discord-server">
-                        <i class="fas fa-code"></i>
-                        Projects
-                    </a>
+                    <div class="projects-card">
+                        <p>Check out my latest projects and tools</p>
+                        <a href="projects.html" class="projects-link">
+                            <i class="fas fa-code"></i>
+                            View Projects
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>
@@ -825,6 +902,15 @@
                     section.scrollIntoView({ behavior: 'smooth' });
                 }
             });
+        });
+
+        const background = document.querySelector('.background-animation');
+
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) * 100;
+            const y = (e.clientY / window.innerHeight) * 100;
+            background.style.setProperty('--mouse-x', `${x}%`);
+            background.style.setProperty('--mouse-y', `${y}%`);
         });
     </script>
 </body>

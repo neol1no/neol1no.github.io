@@ -15,6 +15,8 @@
             --text-color: #ffffff;
             --card-bg: rgba(124, 77, 255, 0.03);
             --card-hover: rgba(124, 77, 255, 0.1);
+            --grid-size: 50px;
+            --grid-color: rgba(26, 26, 26, 0.95);
         }
 
         .background-animation {
@@ -24,10 +26,37 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            opacity: 0.4;
-            background: 
-                radial-gradient(circle at 20% 20%, rgba(124, 77, 255, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(157, 78, 221, 0.1) 0%, transparent 50%);
+            background-color: var(--background-color);
+            background-image: 
+                linear-gradient(var(--background-color) calc(var(--grid-size) - 1px), var(--grid-color) 1px),
+                linear-gradient(90deg, var(--background-color) calc(var(--grid-size) - 1px), var(--grid-color) 1px);
+            background-size: var(--grid-size) var(--grid-size);
+            opacity: 1;
+        }
+
+        .background-animation::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                var(--accent-color) 0%,
+                transparent 20%
+            );
+            opacity: 0.5;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            mask-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            mask-size: var(--grid-size) var(--grid-size);
+            -webkit-mask-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            -webkit-mask-size: var(--grid-size) var(--grid-size);
         }
 
         * {
@@ -275,6 +304,97 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        .tech-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .tech-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: rgba(124, 77, 255, 0.1);
+            color: var(--accent-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(124, 77, 255, 0.2);
+        }
+
+        .tech-tag i {
+            font-size: 1rem;
+        }
+
+        .tags {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .category {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(124, 77, 255, 0.1);
+            color: var(--accent-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(124, 77, 255, 0.2);
+            height: 32px;
+            line-height: 1;
+        }
+
+        .tech-tags {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+
+        .tech-tag {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(124, 77, 255, 0.1);
+            color: var(--accent-color);
+            padding: 0.3rem;
+            border-radius: 20px;
+            border: 1px solid rgba(124, 77, 255, 0.2);
+            width: 32px;
+            height: 32px;
+            line-height: 1;
+        }
+
+        .tech-tag i {
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        .tech-icon {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .category.active-dev {
+            background: rgba(46, 204, 113, 0.1);
+            color: #2ecc71;
+            border-color: rgba(46, 204, 113, 0.2);
+        }
+
+        .category.wip {
+            background: rgba(241, 196, 15, 0.1);
+            color: #f1c40f;
+            border-color: rgba(241, 196, 15, 0.2);
+        }
     </style>
 </head>
 <body>
@@ -301,22 +421,52 @@
                 <p>A collection of school assignments and projects, including blog posts and other academic work.</p>
                 <div class="date"><i class="far fa-calendar-alt"></i> Added: May 22, 2025</div>
             </a>
-            <a href="projects/js-obfuscator/index.html" class="project-item" style="animation-delay: 0.3s">
-                <span class="category">Tools</span>
-                <h2><i class="fas fa-shield-alt"></i> JS Obfuscator</h2>
-                <p>JavaScript code obfuscation tool with multiple protection layers</p>
-                <div class="date"><i class="far fa-calendar-alt"></i> Added: May 23, 2025</div>
+            <a href="projects/lunar/index.html" class="project-item" style="animation-delay: 0.3s">
+                <div class="tags">
+                    <span class="category">Cheats</span>
+                    <span class="category active-dev">Active Development</span>
+                </div>
+                <h2><i class="fas fa-moon"></i> Lunar</h2>
+                <p>Advanced GeoGuessr cheat script with location display, HUD, and auto-play features</p>
+                <div class="date"><i class="far fa-calendar-alt"></i> Added: May 23, 2024</div>
             </a>
-            <a href="projects/js-playground/index.html" class="project-item" style="animation-delay: 0.4s">
-                <span class="category">Tools</span>
-                <h2><i class="fas fa-code"></i> JS Playground</h2>
-                <p>A JavaScript playground with console output for testing and learning</p>
-                <div class="date"><i class="far fa-calendar-alt"></i> Added: May 23, 2025</div>
+            <a href="projects/straftat/index.html" class="project-item" style="animation-delay: 0.4s">
+                <span class="category">Cheats</span>
+                <h2><i class="fas fa-gamepad"></i> Straftat.cc</h2>
+                <p>Full featured cheat menu with aimbot, visuals, exploits, and more</p>
+                <div class="date"><i class="far fa-calendar-alt"></i> Added: May 23, 2024</div>
             </a>
-            <a href="projects/webhook-deleter/index.html" class="project-item" style="animation-delay: 0.5s">
+            <a href="projects/mtrx-ware/index.html" class="project-item" style="animation-delay: 0.5s">
+                <span class="category">Cheats</span>
+                <h2><i class="fas fa-gamepad"></i> MTRX_WARE</h2>
+                <p>CS2 ESP Base with customizable features and color settings</p>
+                <div class="date"><i class="far fa-calendar-alt"></i> Added: May 23, 2024</div>
+            </a>
+            <a href="projects/webhook-deleter/index.html" class="project-item" style="animation-delay: 0.6s">
                 <span class="category">Tools</span>
                 <h2><i class="fas fa-link-slash"></i> Webhook Deleter</h2>
                 <p>Quickly and securely delete Discord webhooks with a single click.</p>
+                <div class="date"><i class="far fa-calendar-alt"></i> Added: May 23, 2024</div>
+            </a>
+            <a href="projects/snake-gambling/index.html" class="project-item" style="animation-delay: 0.7s">
+                <div class="tags">
+                    <span class="category">Games</span>
+                    <span class="category wip">Work in Progress</span>
+                </div>
+                <h2><i class="fas fa-gamepad"></i> Snake Gambling Game</h2>
+                <p>A modern twist on the classic Snake game with gambling and shop features. Collect eggs, upgrade your snake, and try your luck in the gambling section!</p>
+                <div class="date"><i class="far fa-calendar-alt"></i> Added: May 23, 2024</div>
+            </a>
+            <a href="projects/js-obfuscator/index.html" class="project-item" style="animation-delay: 0.8s">
+                <span class="category">Tools</span>
+                <h2><i class="fas fa-shield-alt"></i> JS Obfuscator</h2>
+                <p>A tool to obfuscate JavaScript code, making it harder to read and reverse engineer. Features multiple obfuscation techniques and customization options.</p>
+                <div class="date"><i class="far fa-calendar-alt"></i> Added: May 23, 2024</div>
+            </a>
+            <a href="projects/js-playground/index.html" class="project-item" style="animation-delay: 0.9s">
+                <span class="category">Tools</span>
+                <h2><i class="fas fa-code"></i> JS Playground</h2>
+                <p>An online JavaScript playground for testing and experimenting with code. Features syntax highlighting, console output, and code sharing.</p>
                 <div class="date"><i class="far fa-calendar-alt"></i> Added: May 23, 2024</div>
             </a>
         </div>
@@ -325,6 +475,14 @@
     <script>
         const searchInput = document.getElementById('searchInput');
         const projectItems = document.querySelectorAll('.project-item');
+        const background = document.querySelector('.background-animation');
+
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) * 100;
+            const y = (e.clientY / window.innerHeight) * 100;
+            background.style.setProperty('--mouse-x', `${x}%`);
+            background.style.setProperty('--mouse-y', `${y}%`);
+        });
 
         searchInput.addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase();

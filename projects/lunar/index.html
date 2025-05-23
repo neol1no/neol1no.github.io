@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lunar - GeoGuessr Cheat - neol1no</title>
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ffffff;
+            --secondary-color: #a0a0a0;
+            --accent-color: #7c4dff;
+            --background-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: rgba(124, 77, 255, 0.03);
+            --card-hover: rgba(124, 77, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            overflow-x: hidden;
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(124, 77, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(157, 78, 221, 0.1) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            padding: 4rem 0;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            letter-spacing: -1px;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::before {
+            content: '<';
+            color: var(--accent-color);
+            margin-right: 0.5rem;
+        }
+
+        h1::after {
+            content: '/>';
+            color: var(--accent-color);
+            margin-left: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .active-dev-badge {
+            background: var(--card-bg);
+            color: var(--accent-color);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            border: 2px solid var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .active-dev-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent 0%, var(--accent-color) 50%, transparent 100%);
+            opacity: 0.1;
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .active-dev-badge i {
+            color: var(--accent-color);
+            font-size: 1rem;
+        }
+
+        .discord-button, .trello-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--card-bg);
+            color: var(--secondary-color);
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(124, 77, 255, 0.1);
+            height: 48px;
+        }
+
+        .discord-button:hover, .trello-button:hover {
+            transform: translateY(-2px);
+            background: var(--card-hover);
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .discord-button i, .trello-button i {
+            font-size: 1.3rem;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            background: var(--card-bg);
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 2px solid rgba(124, 77, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            background: var(--card-hover);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 2rem;
+            align-items: start;
+            margin-top: 2rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-left: 4rem;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 2px solid rgba(124, 77, 255, 0.1);
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+            background: var(--card-hover);
+        }
+
+        .feature-card h3 {
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feature-card ul {
+            list-style: none;
+            color: var(--secondary-color);
+        }
+
+        .feature-card li {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feature-card li i {
+            color: var(--accent-color);
+        }
+
+        .carousel {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 12px;
+            border: 2px solid rgba(124, 77, 255, 0.1);
+            background: var(--card-bg);
+        }
+
+        .carousel-inner {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-item {
+            min-width: 100%;
+            position: relative;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            cursor: pointer;
+            object-fit: contain;
+        }
+
+        .carousel-controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            z-index: 10;
+        }
+
+        .carousel-control {
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 1rem;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: background 0.3s ease;
+        }
+
+        .carousel-control:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .carousel-indicators {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+            z-index: 10;
+        }
+
+        .indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .indicator.active {
+            background: var(--accent-color);
+        }
+
+        .preview-section {
+            position: sticky;
+            top: 2rem;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .main-image {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            border-radius: 12px;
+            border: 2px solid rgba(124, 77, 255, 0.1);
+            background: var(--card-bg);
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .thumbnails {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .thumbnail {
+            width: 200px;
+            aspect-ratio: 16/9;
+            border-radius: 8px;
+            border: 2px solid rgba(124, 77, 255, 0.1);
+            background: var(--card-bg);
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .thumbnail:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+            background: var(--card-hover);
+        }
+
+        .thumbnail.active {
+            border-color: var(--accent-color);
+            background: var(--card-hover);
+        }
+
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            border-radius: 4px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90vh;
+            position: relative;
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0.5rem;
+        }
+
+        @media (max-width: 1200px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .preview-section {
+                position: relative;
+                top: 0;
+                order: -1;
+                grid-template-columns: 1fr;
+            }
+
+            .preview-image {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .feature-grid {
+                margin-left: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation"></div>
+    <a href="../../projects.html" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Back to Projects
+    </a>
+    <div class="container">
+        <header>
+            <h1>Lunar</h1>
+            <p class="subtitle">Advanced GeoGuessr Cheat Script</p>
+            <div class="header-buttons">
+                <a href="https://discord.gg/TaCumDu36N" class="discord-button" target="_blank">
+                    <i class="fab fa-discord"></i>
+                    Join Discord
+                </a>
+                <div class="active-dev-badge">
+                    <i class="fas fa-code"></i>
+                    Active Development
+                </div>
+                <a href="https://trello.com/b/alxfxJ6p/lunar-geoguessr" class="trello-button" target="_blank">
+                    <i class="fab fa-trello"></i>
+                    Trello Board
+                </a>
+            </div>
+        </header>
+
+        <div class="content-wrapper">
+            <div class="feature-grid">
+                <div class="feature-card" style="animation-delay: 0.2s">
+                    <h3><i class="fas fa-map-marker-alt"></i> Location</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Open Google Maps location</li>
+                        <li><i class="fas fa-check"></i> Open PlonkIT.net country meta site</li>
+                        <li><i class="fas fa-check"></i> Location display:</li>
+                        <li style="margin-left: 1.5rem"><i class="fas fa-angle-right"></i> Country / State / City</li>
+                        <li style="margin-left: 1.5rem"><i class="fas fa-angle-right"></i> Map Preview</li>
+                        <li style="margin-left: 1.5rem"><i class="fas fa-angle-right"></i> Draggable</li>
+                        <li style="margin-left: 1.5rem"><i class="fas fa-angle-right"></i> Ability to Pop-out</li>
+                        <li><i class="fas fa-check"></i> Text-To-Speech (volume slider)</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card" style="animation-delay: 0.3s">
+                    <h3><i class="fas fa-desktop"></i> HUD</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Enable</li>
+                        <li style="margin-left: 1.5rem"><i class="fas fa-angle-right"></i> Current time at the middle bottom</li>
+                        <li style="margin-left: 1.5rem"><i class="fas fa-angle-right"></i> Current time in classic map timer</li>
+                        <li><i class="fas fa-check"></i> Enable rating display</li>
+                        <li style="margin-left: 1.5rem"><i class="fas fa-angle-right"></i> Rating style (by division, by game mode, by overall)</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card" style="animation-delay: 0.4s">
+                    <h3><i class="fas fa-robot"></i> Auto Play</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Enable</li>
+                        <li><i class="fas fa-check"></i> Enable HUD</li>
+                        <li><i class="fas fa-check"></i> Start / Stop</li>
+                        <li><i class="fas fa-check"></i> Min/Max delay</li>
+                        <li><i class="fas fa-check"></i> Sleep settings</li>
+                        <li><i class="fas fa-check"></i> Max games settings</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card" style="animation-delay: 0.5s">
+                    <h3><i class="fas fa-cog"></i> Settings</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Set min/max delay for request/intercept</li>
+                        <li><i class="fas fa-check"></i> See User ID</li>
+                        <li><i class="fas fa-check"></i> Set leaderboard name</li>
+                        <li style="margin-top: 0.5rem"><i class="fas fa-check"></i> API status</li>
+                        <li><i class="fas fa-check"></i> Change API (3 choices)</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card" style="animation-delay: 0.6s">
+                    <h3><i class="fas fa-list"></i> Logs</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Menu internal logs</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card" style="animation-delay: 0.7s">
+                    <h3><i class="fas fa-palette"></i> Customization (Menu)</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Change color of everything</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="preview-section">
+                <div class="main-image">
+                    <img src="assets/lunar_menu.png" alt="Lunar Menu Interface" id="mainImage">
+                </div>
+                <div class="thumbnails">
+                    <div class="thumbnail active" data-src="assets/lunar_menu.png">
+                        <img src="assets/lunar_menu.png" alt="Lunar Menu Interface">
+                    </div>
+                    <div class="thumbnail" data-src="assets/location_display.png">
+                        <img src="assets/location_display.png" alt="Location Display">
+                    </div>
+                    <div class="thumbnail" data-src="assets/lunar_theme_shower.png">
+                        <img src="assets/lunar_theme_shower.png" alt="Theme Shower">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="imageModal">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <img src="" alt="Expanded screenshot">
+        </div>
+    </div>
+
+    <script>
+        const mainImage = document.getElementById('mainImage');
+        const thumbnails = document.querySelectorAll('.thumbnail');
+        const modal = document.getElementById('imageModal');
+        const modalImg = modal.querySelector('img');
+        const closeBtn = modal.querySelector('.close-modal');
+
+        thumbnails.forEach(thumb => {
+            thumb.addEventListener('click', () => {
+                const newSrc = thumb.dataset.src;
+                mainImage.src = newSrc;
+                thumbnails.forEach(t => t.classList.remove('active'));
+                thumb.classList.add('active');
+            });
+        });
+
+        mainImage.addEventListener('click', () => {
+            modal.classList.add('active');
+            modalImg.src = mainImage.src;
+            document.body.style.overflow = 'hidden';
+        });
+
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        closeBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+    </script>
+</body>
+</html> 

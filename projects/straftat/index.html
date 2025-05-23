@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Straftat.cc - Cheat Menu - neol1no</title>
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ffffff;
+            --secondary-color: #a0a0a0;
+            --accent-color: #7c4dff;
+            --background-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: rgba(124, 77, 255, 0.03);
+            --card-hover: rgba(124, 77, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            overflow-x: hidden;
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(124, 77, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(157, 78, 221, 0.1) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            padding: 4rem 0;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            letter-spacing: -1px;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::before {
+            content: '<';
+            color: var(--accent-color);
+            margin-right: 0.5rem;
+        }
+
+        h1::after {
+            content: '/>';
+            color: var(--accent-color);
+            margin-left: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+
+        .github-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--card-bg);
+            color: var(--secondary-color);
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            border: 2px solid rgba(124, 77, 255, 0.1);
+        }
+
+        .github-button:hover {
+            transform: translateY(-2px);
+            background: var(--card-hover);
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .github-button i {
+            font-size: 1.3rem;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            background: var(--card-bg);
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 2px solid rgba(124, 77, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            background: var(--card-hover);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 2rem;
+            align-items: start;
+            margin-top: 2rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-left: 4rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 2px solid rgba(124, 77, 255, 0.1);
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+            background: var(--card-hover);
+        }
+
+        .feature-card h3 {
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feature-card ul {
+            list-style: none;
+            color: var(--secondary-color);
+        }
+
+        .feature-card li {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feature-card li i {
+            color: var(--accent-color);
+        }
+
+        .preview-section {
+            position: sticky;
+            top: 2rem;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .preview-image {
+            width: 100%;
+            border-radius: 12px;
+            border: 2px solid rgba(124, 77, 255, 0.2);
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out forwards;
+            animation-delay: 0.3s;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+
+        .preview-image:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .preview-label {
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            grid-column: 1 / -1;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90vh;
+            border-radius: 12px;
+            border: 2px solid var(--accent-color);
+            box-shadow: 0 0 30px rgba(124, 77, 255, 0.3);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .close-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: var(--accent-color);
+            font-size: 2rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .close-button:hover {
+            transform: rotate(90deg);
+        }
+
+        @media (max-width: 1200px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .preview-section {
+                position: relative;
+                top: 0;
+                order: -1;
+            }
+
+            .preview-image {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .feature-grid {
+                margin-left: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation"></div>
+    <a href="../../projects.html" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Back to Projects
+    </a>
+    <div class="container">
+        <header>
+            <h1>Straftat.cc</h1>
+            <p class="subtitle">Full Featured Cheat Menu</p>
+            <a href="https://github.com/neol1no/STRAFTAT.CC" class="github-button" target="_blank">
+                <i class="fab fa-github"></i>
+                View on GitHub
+            </a>
+        </header>
+
+        <div class="content-wrapper">
+            <div class="feature-grid">
+                <div class="feature-card" style="animation-delay: 0.2s">
+                    <h3><i class="fas fa-crosshairs"></i> Aimbot - 360 FOV</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Enabled</li>
+                        <li><i class="fas fa-check"></i> Auto Fire (Vis Check)</li>
+                        <li><i class="fas fa-check"></i> Set Hold Bind</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card" style="animation-delay: 0.3s">
+                    <h3><i class="fas fa-eye"></i> Visuals</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> 3D Box</li>
+                        <li><i class="fas fa-check"></i> Name</li>
+                        <li><i class="fas fa-check"></i> Health</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card" style="animation-delay: 0.4s">
+                    <h3><i class="fas fa-bolt"></i> Exploits</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Rapid Fire</li>
+                        <li><i class="fas fa-check"></i> Infinite Ammo</li>
+                        <li><i class="fas fa-check"></i> No Spread</li>
+                        <li><i class="fas fa-check"></i> InstaKill</li>
+                        <li><i class="fas fa-check"></i> Freeze Enemy [HOST]</li>
+                        <li><i class="fas fa-check"></i> Godmode [HOST]</li>
+                        <li><i class="fas fa-check"></i> Magic Bullet / Bullet TP</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card" style="animation-delay: 0.5s">
+                    <h3><i class="fas fa-tools"></i> Misc</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Weapon Speed</li>
+                        <li><i class="fas fa-check"></i> Speed Hack</li>
+                        <li><i class="fas fa-check"></i> Fly</li>
+                        <li><i class="fas fa-check"></i> Teleport to Enemy (Bind: Z)</li>
+                        <li><i class="fas fa-check"></i> Unlock Achievments (F5)</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card" style="animation-delay: 0.6s">
+                    <h3><i class="fas fa-shield-alt"></i> Anti Aim</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Always Slide Animation</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="preview-section">
+                <div class="preview-label">Menu:</div>
+                <img src="assets/straftat_menu.png" alt="Straftat.cc Menu Preview" class="preview-image" id="menuPreview">
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="imageModal">
+        <span class="close-button">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
+    <script>
+        document.getElementById('menuPreview').onerror = function() {
+            this.style.display = 'none';
+        };
+
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const closeBtn = document.querySelector('.close-button');
+
+        document.querySelectorAll('.preview-image').forEach(img => {
+            img.onclick = function() {
+                modal.classList.add('active');
+                modalImg.src = this.src;
+            }
+        });
+
+        closeBtn.onclick = function() {
+            modal.classList.remove('active');
+        }
+
+        modal.onclick = function(e) {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html> 
