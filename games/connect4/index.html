@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect 4 - neol1no</title>
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #ffffff;
+            --secondary-color: #a0a0a0;
+            --accent-color: #7c4dff;
+            --background-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: rgba(124, 77, 255, 0.03);
+            --card-hover: rgba(124, 77, 255, 0.1);
+            --grid-size: 50px;
+            --grid-color: rgba(26, 26, 26, 0.95);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            overflow-x: hidden;
+            height: 100%;
+            overflow-y: scroll;
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-color: var(--background-color);
+            background-image: 
+                linear-gradient(var(--background-color) calc(var(--grid-size) - 1px), var(--grid-color) 1px),
+                linear-gradient(90deg, var(--background-color) calc(var(--grid-size) - 1px), var(--grid-color) 1px);
+            background-size: var(--grid-size) var(--grid-size);
+            opacity: 1;
+        }
+
+        .background-animation::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                var(--accent-color) 0%,
+                transparent 20%
+            );
+            opacity: 0.5;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            mask-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            mask-size: var(--grid-size) var(--grid-size);
+            -webkit-mask-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            -webkit-mask-size: var(--grid-size) var(--grid-size);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .back-link {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            background: var(--card-bg);
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 2px solid rgba(124, 77, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-link:hover {
+            background: var(--card-hover);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .game-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 2rem;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            background: var(--accent-color);
+            padding: 10px;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+
+        .cell {
+            aspect-ratio: 1;
+            background: var(--background-color);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cell:hover {
+            background: var(--card-hover);
+        }
+
+        .cell.red {
+            background: #ff4444;
+        }
+
+        .cell.yellow {
+            background: #ffeb3b;
+        }
+
+        .game-info {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .game-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            letter-spacing: -1px;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status {
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .player-turn {
+            font-size: 1.1rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        .connection-panel {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .connection-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .connection-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .connection-input {
+            width: 100%;
+            padding: 0.8rem;
+            background: var(--background-color);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .connection-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            background: var(--accent-color);
+            color: var(--background-color);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(124, 77, 255, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .game-id {
+            background: var(--background-color);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            text-align: center;
+            display: none;
+        }
+
+        .game-id.show {
+            display: block;
+        }
+
+        .copy-btn {
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            cursor: pointer;
+            margin-left: 0.5rem;
+        }
+
+        .copy-btn:hover {
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .game-board {
+                gap: 5px;
+                padding: 5px;
+            }
+
+            .game-title {
+                font-size: 2rem;
+            }
+
+            .connection-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation"></div>
+    <div class="container">
+        <a href="../../games.html" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            Back to Games
+        </a>
+
+        <div class="game-info">
+            <h1 class="game-title">Connect 4</h1>
+            <p class="status">Play Connect 4 with a friend!</p>
+        </div>
+
+        <div class="connection-panel">
+            <h2 class="connection-title">Multiplayer</h2>
+            <div class="connection-buttons">
+                <button class="btn" id="createGame">Create Game</button>
+                <button class="btn" id="joinGame">Join Game</button>
+            </div>
+            <input type="text" class="connection-input" id="gameIdInput" placeholder="Enter Game ID" style="display: none;">
+            <div class="game-id" id="gameIdDisplay">
+                Game ID: <span id="gameId"></span>
+                <button class="copy-btn" id="copyGameId">
+                    <i class="fas fa-copy"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="game-container" style="display: none;">
+            <div class="player-turn" id="playerTurn"></div>
+            <div class="game-board" id="gameBoard"></div>
+        </div>
+    </div>
+
+    <script>
+        const peer = new Peer({
+            host: 'peerjs-server.herokuapp.com',
+            secure: true,
+            port: 443,
+            debug: 3
+        });
+        let conn = null;
+        let isHost = false;
+        let currentPlayer = 'red';
+        let gameBoard = Array(6).fill().map(() => Array(7).fill(null));
+        let gameActive = false;
+
+        // DOM Elements
+        const createGameBtn = document.getElementById('createGame');
+        const joinGameBtn = document.getElementById('joinGame');
+        const gameIdInput = document.getElementById('gameIdInput');
+        const gameIdDisplay = document.getElementById('gameIdDisplay');
+        const gameIdSpan = document.getElementById('gameId');
+        const copyGameIdBtn = document.getElementById('copyGameId');
+        const gameContainer = document.querySelector('.game-container');
+        const playerTurnDisplay = document.getElementById('playerTurn');
+        const gameBoardElement = document.getElementById('gameBoard');
+
+        // Create game board
+        function createBoard() {
+            gameBoardElement.innerHTML = '';
+            for (let i = 0; i < 42; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.dataset.col = i % 7;
+                cell.addEventListener('click', () => makeMove(i % 7));
+                gameBoardElement.appendChild(cell);
+            }
+        }
+
+        // Make a move
+        function makeMove(col) {
+            if (!gameActive || (isHost && currentPlayer !== 'red') || (!isHost && currentPlayer !== 'yellow')) {
+                return;
+            }
+
+            const row = getLowestEmptyRow(col);
+            if (row === -1) return;
+
+            gameBoard[row][col] = currentPlayer;
+            updateBoard();
+            
+            if (checkWin(row, col)) {
+                gameActive = false;
+                playerTurnDisplay.textContent = `${currentPlayer.toUpperCase()} wins!`;
+                return;
+            }
+
+            currentPlayer = currentPlayer === 'red' ? 'yellow' : 'red';
+            playerTurnDisplay.textContent = `Current turn: ${currentPlayer.toUpperCase()}`;
+
+            if (conn) {
+                conn.send({ type: 'move', col });
+            }
+        }
+
+        // Get lowest empty row in a column
+        function getLowestEmptyRow(col) {
+            for (let row = 5; row >= 0; row--) {
+                if (!gameBoard[row][col]) {
+                    return row;
+                }
+            }
+            return -1;
+        }
+
+        // Update board display
+        function updateBoard() {
+            const cells = document.querySelectorAll('.cell');
+            cells.forEach((cell, index) => {
+                const row = Math.floor(index / 7);
+                const col = index % 7;
+                cell.className = 'cell';
+                if (gameBoard[row][col]) {
+                    cell.classList.add(gameBoard[row][col]);
+                }
+            });
+        }
+
+        // Check for win
+        function checkWin(row, col) {
+            const directions = [
+                [[0, 1], [0, -1]], // horizontal
+                [[1, 0], [-1, 0]], // vertical
+                [[1, 1], [-1, -1]], // diagonal /
+                [[1, -1], [-1, 1]] // diagonal \
+            ];
+
+            const player = gameBoard[row][col];
+
+            for (const direction of directions) {
+                let count = 1;
+                for (const [dx, dy] of direction) {
+                    let r = row + dx;
+                    let c = col + dy;
+                    while (r >= 0 && r < 6 && c >= 0 && c < 7 && gameBoard[r][c] === player) {
+                        count++;
+                        r += dx;
+                        c += dy;
+                    }
+                }
+                if (count >= 4) return true;
+            }
+            return false;
+        }
+
+        // Create game
+        createGameBtn.addEventListener('click', () => {
+            isHost = true;
+            currentPlayer = 'red';
+            gameActive = true;
+            gameBoard = Array(6).fill().map(() => Array(7).fill(null));
+            
+            peer.on('open', (id) => {
+                gameIdSpan.textContent = id;
+                gameIdDisplay.classList.add('show');
+                createGameBtn.disabled = true;
+                joinGameBtn.disabled = true;
+                gameIdInput.style.display = 'none';
+            });
+
+            peer.on('connection', (connection) => {
+                conn = connection;
+                gameContainer.style.display = 'block';
+                playerTurnDisplay.textContent = 'Current turn: RED';
+                createBoard();
+
+                conn.on('data', (data) => {
+                    if (data.type === 'move') {
+                        const row = getLowestEmptyRow(data.col);
+                        if (row !== -1) {
+                            gameBoard[row][data.col] = currentPlayer;
+                            updateBoard();
+                            
+                            if (checkWin(row, data.col)) {
+                                gameActive = false;
+                                playerTurnDisplay.textContent = `${currentPlayer.toUpperCase()} wins!`;
+                                return;
+                            }
+
+                            currentPlayer = currentPlayer === 'red' ? 'yellow' : 'red';
+                            playerTurnDisplay.textContent = `Current turn: ${currentPlayer.toUpperCase()}`;
+                        }
+                    }
+                });
+            });
+        });
+
+        // Join game
+        joinGameBtn.addEventListener('click', () => {
+            gameIdInput.style.display = 'block';
+            gameIdInput.focus();
+        });
+
+        gameIdInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const gameId = gameIdInput.value.trim();
+                if (gameId) {
+                    isHost = false;
+                    currentPlayer = 'yellow';
+                    gameActive = true;
+                    gameBoard = Array(6).fill().map(() => Array(7).fill(null));
+
+                    conn = peer.connect(gameId);
+                    conn.on('open', () => {
+                        gameContainer.style.display = 'block';
+                        playerTurnDisplay.textContent = 'Current turn: RED';
+                        createBoard();
+                        createGameBtn.disabled = true;
+                        joinGameBtn.disabled = true;
+                        gameIdInput.style.display = 'none';
+                    });
+
+                    conn.on('data', (data) => {
+                        if (data.type === 'move') {
+                            const row = getLowestEmptyRow(data.col);
+                            if (row !== -1) {
+                                gameBoard[row][data.col] = currentPlayer;
+                                updateBoard();
+                                
+                                if (checkWin(row, data.col)) {
+                                    gameActive = false;
+                                    playerTurnDisplay.textContent = `${currentPlayer.toUpperCase()} wins!`;
+                                    return;
+                                }
+
+                                currentPlayer = currentPlayer === 'red' ? 'yellow' : 'red';
+                                playerTurnDisplay.textContent = `Current turn: ${currentPlayer.toUpperCase()}`;
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+        // Copy game ID
+        copyGameIdBtn.addEventListener('click', () => {
+            const gameId = gameIdSpan.textContent;
+            navigator.clipboard.writeText(gameId).then(() => {
+                copyGameIdBtn.innerHTML = '<i class="fas fa-check"></i>';
+                setTimeout(() => {
+                    copyGameIdBtn.innerHTML = '<i class="fas fa-copy"></i>';
+                }, 2000);
+            });
+        });
+
+        // Background animation
+        const background = document.querySelector('.background-animation');
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) * 100;
+            const y = (e.clientY / window.innerHeight) * 100;
+            background.style.setProperty('--mouse-x', `${x}%`);
+            background.style.setProperty('--mouse-y', `${y}%`);
+        });
+    </script>
+</body>
+</html> 
