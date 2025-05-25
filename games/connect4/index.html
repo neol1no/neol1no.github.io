@@ -6,7 +6,6 @@
     <title>Connect 4 - neol1no</title>
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
     <style>
         :root {
             --primary-color: #ffffff;
@@ -87,6 +86,37 @@
             align-items: center;
         }
 
+        .menu-bar {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card-bg);
+            padding: 1rem 1.5rem 0.75rem;
+            border-radius: 0 0 16px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: none;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            z-index: 1000;
+        }
+
+        .menu-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            letter-spacing: -1px;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .menu-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+
         .back-link {
             position: fixed;
             top: 1.5rem;
@@ -116,7 +146,7 @@
             border-radius: 16px;
             padding: 2rem;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            margin-top: 2rem;
+            margin-top: 1rem;
             width: 100%;
             max-width: 800px;
         }
@@ -125,10 +155,33 @@
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 10px;
-            background: var(--accent-color);
+            background: #2c2c2c;
             padding: 10px;
             border-radius: 10px;
             margin: 2rem 0;
+            position: relative;
+        }
+
+        .column-selector {
+            position: absolute;
+            top: -40px;
+            width: calc(100% / 7);
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: left 0.3s ease;
+            pointer-events: none;
+        }
+
+        .column-selector::after {
+            content: '▼';
+            color: #2c2c2c;
+            font-size: 24px;
+        }
+
+        .column-highlight {
+            display: none;
         }
 
         .cell {
@@ -137,10 +190,23 @@
             border-radius: 50%;
             cursor: pointer;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .cell:hover {
-            background: var(--card-hover);
+        .cell::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            transition: top 0.5s ease;
+        }
+
+        .cell.dropping::before {
+            top: 0;
         }
 
         .cell.red {
@@ -149,6 +215,10 @@
 
         .cell.yellow {
             background: #ffeb3b;
+        }
+
+        .cell.preview {
+            box-shadow: inset 0 0 30px rgba(124, 77, 255, 0.5);
         }
 
         .game-info {
@@ -173,13 +243,42 @@
             margin-bottom: 1rem;
         }
 
+        .game-mode {
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+
         .player-turn {
             font-size: 1.1rem;
             color: var(--accent-color);
             margin-bottom: 1rem;
         }
 
-        .connection-panel {
+        .player-turn .red {
+            color: #ff4444;
+        }
+
+        .player-turn .yellow {
+            color: #ffeb3b;
+        }
+
+        .turn-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .turn-indicator.red {
+            background: #ff4444;
+        }
+
+        .turn-indicator.yellow {
+            background: #ffeb3b;
+        }
+
+        .mode-selector {
             background: var(--card-bg);
             border-radius: 12px;
             padding: 1.5rem;
@@ -188,42 +287,26 @@
             max-width: 500px;
         }
 
-        .connection-title {
+        .mode-title {
             font-size: 1.5rem;
             color: var(--primary-color);
             margin-bottom: 1rem;
         }
 
-        .connection-buttons {
+        .mode-buttons {
             display: flex;
             gap: 1rem;
             justify-content: center;
             margin-bottom: 1rem;
         }
 
-        .connection-input {
-            width: 100%;
-            padding: 0.8rem;
-            background: var(--background-color);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: var(--text-color);
-            margin-bottom: 1rem;
-            font-size: 1rem;
-        }
-
-        .connection-input:focus {
-            outline: none;
-            border-color: var(--accent-color);
-        }
-
         .btn {
-            padding: 0.8rem 1.5rem;
+            padding: 0.6rem 1.2rem;
             border: none;
             border-radius: 8px;
             background: var(--accent-color);
             color: var(--background-color);
-            font-size: 1rem;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -239,29 +322,48 @@
             transform: none;
         }
 
-        .game-id {
-            background: var(--background-color);
+        .stats-panel {
+            background: var(--card-bg);
+            border-radius: 12px;
             padding: 1rem;
-            border-radius: 8px;
-            margin-top: 1rem;
-            text-align: center;
+            margin: 4rem auto 1rem;
+            width: 100%;
+            max-width: 400px;
             display: none;
         }
 
-        .game-id.show {
+        .stats-panel.show {
             display: block;
         }
 
-        .copy-btn {
-            background: none;
-            border: none;
-            color: var(--accent-color);
-            cursor: pointer;
-            margin-left: 0.5rem;
+        .stats-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.75rem;
         }
 
-        .copy-btn:hover {
-            color: var(--primary-color);
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            background: var(--background-color);
+            padding: 0.75rem;
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            color: var(--accent-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: var(--secondary-color);
+            font-size: 0.8rem;
         }
 
         @media (max-width: 768px) {
@@ -274,7 +376,7 @@
                 font-size: 2rem;
             }
 
-            .connection-buttons {
+            .mode-buttons {
                 flex-direction: column;
             }
 
@@ -292,105 +394,396 @@
             Back to Games
         </a>
 
-        <div class="game-info">
-            <h1 class="game-title">Connect 4</h1>
-            <p class="status">Play Connect 4 with a friend!</p>
+        <div class="menu-bar">
+            <h1 class="menu-title">Connect 4</h1>
+            <div class="menu-buttons">
+                <button class="btn" id="localMode">1v1 Local</button>
+                <button class="btn" id="aiMode">Play vs AI</button>
+            </div>
         </div>
 
-        <div class="connection-panel">
-            <h2 class="connection-title">Multiplayer</h2>
-            <div class="connection-buttons">
-                <button class="btn" id="createGame">Create Game</button>
-                <button class="btn" id="joinGame">Join Game</button>
-            </div>
-            <input type="text" class="connection-input" id="gameIdInput" placeholder="Enter Game ID" style="display: none;">
-            <div class="game-id" id="gameIdDisplay">
-                Game ID: <span id="gameId"></span>
-                <button class="copy-btn" id="copyGameId">
-                    <i class="fas fa-copy"></i>
-                </button>
+        <div class="stats-panel">
+            <h2 class="stats-title">Game Stats</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="redWins">0</div>
+                    <div class="stat-label">Red Wins</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="yellowWins">0</div>
+                    <div class="stat-label">Yellow Wins</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="draws">0</div>
+                    <div class="stat-label">Draws</div>
+                </div>
             </div>
         </div>
 
         <div class="game-container" style="display: none;">
+            <div class="game-mode" id="gameMode"></div>
             <div class="player-turn" id="playerTurn"></div>
             <div class="game-board" id="gameBoard"></div>
         </div>
     </div>
 
     <script>
-        const peer = new Peer({
-            host: 'peerjs-server.herokuapp.com',
-            secure: true,
-            port: 443,
-            debug: 3
-        });
-        let conn = null;
-        let isHost = false;
         let currentPlayer = 'red';
         let gameBoard = Array(6).fill().map(() => Array(7).fill(null));
         let gameActive = false;
+        let isAIMode = false;
+        let stats = {
+            redWins: 0,
+            yellowWins: 0,
+            draws: 0
+        };
 
-        // DOM Elements
-        const createGameBtn = document.getElementById('createGame');
-        const joinGameBtn = document.getElementById('joinGame');
-        const gameIdInput = document.getElementById('gameIdInput');
-        const gameIdDisplay = document.getElementById('gameIdDisplay');
-        const gameIdSpan = document.getElementById('gameId');
-        const copyGameIdBtn = document.getElementById('copyGameId');
+        const localModeBtn = document.getElementById('localMode');
+        const aiModeBtn = document.getElementById('aiMode');
         const gameContainer = document.querySelector('.game-container');
         const playerTurnDisplay = document.getElementById('playerTurn');
         const gameBoardElement = document.getElementById('gameBoard');
+        const statsPanel = document.querySelector('.stats-panel');
+        const redWinsDisplay = document.getElementById('redWins');
+        const yellowWinsDisplay = document.getElementById('yellowWins');
+        const drawsDisplay = document.getElementById('draws');
 
-        // Create game board
         function createBoard() {
             gameBoardElement.innerHTML = '';
+            const selector = document.createElement('div');
+            selector.className = 'column-selector';
+            gameBoardElement.appendChild(selector);
+
+            const highlight = document.createElement('div');
+            highlight.className = 'column-highlight';
+            gameBoardElement.appendChild(highlight);
+
             for (let i = 0; i < 42; i++) {
                 const cell = document.createElement('div');
                 cell.className = 'cell';
                 cell.dataset.col = i % 7;
+                cell.dataset.row = Math.floor(i / 7);
                 cell.addEventListener('click', () => makeMove(i % 7));
+                cell.addEventListener('mouseenter', () => {
+                    if (gameActive) {
+                        selector.style.left = `${(i % 7) * (100 / 7)}%`;
+                        const row = getLowestEmptyRow(i % 7);
+                        if (row !== -1) {
+                            const previewCell = document.querySelector(`.cell[data-row="${row}"][data-col="${i % 7}"]`);
+                            if (previewCell) {
+                                previewCell.classList.add('preview');
+                            }
+                        }
+                    }
+                });
+                cell.addEventListener('mouseleave', () => {
+                    const cells = document.querySelectorAll('.cell');
+                    cells.forEach(cell => cell.classList.remove('preview'));
+                });
                 gameBoardElement.appendChild(cell);
             }
         }
 
-        // Make a move
+        function updateStats() {
+            redWinsDisplay.textContent = stats.redWins;
+            yellowWinsDisplay.textContent = stats.yellowWins;
+            drawsDisplay.textContent = stats.draws;
+        }
+
+        function animateDrop(row, col) {
+            const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+            cell.classList.add('dropping');
+            setTimeout(() => {
+                cell.classList.remove('dropping');
+            }, 500);
+        }
+
+        function startGame(mode) {
+            isAIMode = mode === 'ai';
+            currentPlayer = 'red';
+            gameActive = true;
+            gameBoard = Array(6).fill().map(() => Array(7).fill(null));
+            gameContainer.style.display = 'block';
+            statsPanel.classList.add('show');
+            document.getElementById('gameMode').textContent = isAIMode ? 'Playing against AI' : '1v1 Local Game';
+            updateTurnDisplay();
+            createBoard();
+        }
+
+        function updateTurnDisplay() {
+            const turnText = `Current turn: <span class="${currentPlayer}">${currentPlayer.toUpperCase()}</span>`;
+            playerTurnDisplay.innerHTML = turnText;
+        }
+
         function makeMove(col) {
-            if (!gameActive || (isHost && currentPlayer !== 'red') || (!isHost && currentPlayer !== 'yellow')) {
-                return;
-            }
+            if (!gameActive) return;
+            if (isAIMode && currentPlayer === 'yellow') return;
 
             const row = getLowestEmptyRow(col);
             if (row === -1) return;
 
             gameBoard[row][col] = currentPlayer;
+            animateDrop(row, col);
             updateBoard();
             
             if (checkWin(row, col)) {
                 gameActive = false;
                 playerTurnDisplay.textContent = `${currentPlayer.toUpperCase()} wins!`;
+                if (currentPlayer === 'red') stats.redWins++;
+                else stats.yellowWins++;
+                updateStats();
+                setTimeout(resetGame, 2000);
+                return;
+            }
+
+            if (checkDraw()) {
+                gameActive = false;
+                playerTurnDisplay.textContent = "It's a draw!";
+                stats.draws++;
+                updateStats();
+                setTimeout(resetGame, 2000);
                 return;
             }
 
             currentPlayer = currentPlayer === 'red' ? 'yellow' : 'red';
-            playerTurnDisplay.textContent = `Current turn: ${currentPlayer.toUpperCase()}`;
+            updateTurnDisplay();
 
-            if (conn) {
-                conn.send({ type: 'move', col });
+            if (isAIMode && currentPlayer === 'yellow' && gameActive) {
+                setTimeout(makeAIMove, 500);
             }
         }
 
-        // Get lowest empty row in a column
-        function getLowestEmptyRow(col) {
+        function makeAIMove() {
+            const col = findBestMove();
+            if (col !== -1) {
+                const row = getLowestEmptyRow(col);
+                if (row !== -1) {
+                    gameBoard[row][col] = currentPlayer;
+                    animateDrop(row, col);
+                    updateBoard();
+                    
+                    if (checkWin(row, col)) {
+                        gameActive = false;
+                        playerTurnDisplay.textContent = `${currentPlayer.toUpperCase()} wins!`;
+                        if (currentPlayer === 'red') stats.redWins++;
+                        else stats.yellowWins++;
+                        updateStats();
+                        setTimeout(resetGame, 2000);
+                        return;
+                    }
+
+                    if (checkDraw()) {
+                        gameActive = false;
+                        playerTurnDisplay.textContent = "It's a draw!";
+                        stats.draws++;
+                        updateStats();
+                        setTimeout(resetGame, 2000);
+                        return;
+                    }
+
+                    currentPlayer = currentPlayer === 'red' ? 'yellow' : 'red';
+                    updateTurnDisplay();
+                }
+            }
+        }
+
+        function findBestMove() {
+            const availableMoves = [];
+            for (let col = 0; col < 7; col++) {
+                if (getLowestEmptyRow(col) !== -1) {
+                    availableMoves.push(col);
+                }
+            }
+
+            if (availableMoves.length === 0) return -1;
+
+            const scores = availableMoves.map(col => {
+                const row = getLowestEmptyRow(col);
+                let score = 0;
+
+                const tempBoard = gameBoard.map(row => [...row]);
+                tempBoard[row][col] = currentPlayer;
+
+                if (checkWinAtPosition(row, col, tempBoard)) {
+                    return { col, score: 1000 };
+                }
+
+                const opponent = currentPlayer === 'red' ? 'yellow' : 'red';
+                let opponentCanWin = false;
+                let opponentWinningMoves = 0;
+                let opponentThreats = 0;
+
+                for (let c = 0; c < 7; c++) {
+                    const r = getLowestEmptyRow(c, tempBoard);
+                    if (r !== -1) {
+                        tempBoard[r][c] = opponent;
+                        if (checkWinAtPosition(r, c, tempBoard)) {
+                            opponentCanWin = true;
+                            opponentWinningMoves++;
+                        }
+                        const threats = countThreats(r, c, tempBoard, opponent);
+                        opponentThreats += threats;
+                        tempBoard[r][c] = null;
+                    }
+                }
+
+                if (opponentCanWin) {
+                    score -= 500 * opponentWinningMoves;
+                }
+
+                if (opponentThreats > 0) {
+                    score -= 200 * opponentThreats;
+                }
+
+                const connections = countConnections(row, col, tempBoard);
+                score += connections * 10;
+
+                if (col === 3) {
+                    if (row === 5) score += 50;
+                    else if (row === 4) score += 40;
+                    else if (row === 3) score += 30;
+                } else if (col === 2 || col === 4) {
+                    if (row === 5) score += 30;
+                    else if (row === 4) score += 20;
+                }
+
+                return { col, score };
+            });
+
+            scores.sort((a, b) => b.score - a.score);
+            return scores[0].col;
+        }
+
+        function countThreats(row, col, board, player) {
+            const directions = [
+                [[0, 1], [0, -1]],
+                [[1, 0], [-1, 0]],
+                [[1, 1], [-1, -1]],
+                [[1, -1], [-1, 1]]
+            ];
+
+            let threats = 0;
+
+            for (const direction of directions) {
+                let count = 1;
+                let openEnds = 0;
+                
+                for (const [dx, dy] of direction) {
+                    let r = row + dx;
+                    let c = col + dy;
+                    let consecutive = 0;
+                    let hasSpace = false;
+                    
+                    while (r >= 0 && r < 6 && c >= 0 && c < 7) {
+                        if (board[r][c] === player) {
+                            consecutive++;
+                        } else if (board[r][c] === null) {
+                            hasSpace = true;
+                            openEnds++;
+                            break;
+                        } else {
+                            break;
+                        }
+                        r += dx;
+                        c += dy;
+                    }
+                    
+                    if (consecutive > 0 && hasSpace) {
+                        count += consecutive;
+                    }
+                }
+
+                if (count >= 3 && openEnds >= 1) {
+                    threats++;
+                }
+            }
+
+            return threats;
+        }
+
+        function getLowestEmptyRow(col, board = gameBoard) {
             for (let row = 5; row >= 0; row--) {
-                if (!gameBoard[row][col]) {
+                if (!board[row][col]) {
                     return row;
                 }
             }
             return -1;
         }
 
-        // Update board display
+        function checkWinAtPosition(row, col, board) {
+            const directions = [
+                [[0, 1], [0, -1]],
+                [[1, 0], [-1, 0]],
+                [[1, 1], [-1, -1]],
+                [[1, -1], [-1, 1]]
+            ];
+
+            const player = board[row][col];
+
+            for (const direction of directions) {
+                let count = 1;
+                for (const [dx, dy] of direction) {
+                    let r = row + dx;
+                    let c = col + dy;
+                    while (r >= 0 && r < 6 && c >= 0 && c < 7 && board[r][c] === player) {
+                        count++;
+                        r += dx;
+                        c += dy;
+                    }
+                }
+                if (count >= 4) return true;
+            }
+            return false;
+        }
+
+        function countConnections(row, col, board) {
+            const directions = [
+                [[0, 1], [0, -1]],
+                [[1, 0], [-1, 0]],
+                [[1, 1], [-1, -1]],
+                [[1, -1], [-1, 1]]
+            ];
+
+            const player = board[row][col];
+            let totalConnections = 0;
+
+            for (const direction of directions) {
+                let count = 1;
+                let openEnds = 0;
+                
+                for (const [dx, dy] of direction) {
+                    let r = row + dx;
+                    let c = col + dy;
+                    let consecutive = 0;
+                    let hasSpace = false;
+                    
+                    while (r >= 0 && r < 6 && c >= 0 && c < 7) {
+                        if (board[r][c] === player) {
+                            consecutive++;
+                        } else if (board[r][c] === null) {
+                            hasSpace = true;
+                            openEnds++;
+                            break;
+                        } else {
+                            break;
+                        }
+                        r += dx;
+                        c += dy;
+                    }
+                    
+                    if (consecutive > 0 && hasSpace) {
+                        count += consecutive;
+                    }
+                }
+
+                if (count >= 2) {
+                    totalConnections += count * (openEnds + 1);
+                }
+            }
+
+            return totalConnections;
+        }
+
         function updateBoard() {
             const cells = document.querySelectorAll('.cell');
             cells.forEach((cell, index) => {
@@ -403,13 +796,12 @@
             });
         }
 
-        // Check for win
         function checkWin(row, col) {
             const directions = [
-                [[0, 1], [0, -1]], // horizontal
-                [[1, 0], [-1, 0]], // vertical
-                [[1, 1], [-1, -1]], // diagonal /
-                [[1, -1], [-1, 1]] // diagonal \
+                [[0, 1], [0, -1]],
+                [[1, 0], [-1, 0]],
+                [[1, 1], [-1, -1]],
+                [[1, -1], [-1, 1]]
             ];
 
             const player = gameBoard[row][col];
@@ -430,107 +822,26 @@
             return false;
         }
 
-        // Create game
-        createGameBtn.addEventListener('click', () => {
-            isHost = true;
+        function checkDraw() {
+            return gameBoard[0].every(cell => cell !== null);
+        }
+
+        function resetGame() {
             currentPlayer = 'red';
             gameActive = true;
             gameBoard = Array(6).fill().map(() => Array(7).fill(null));
-            
-            peer.on('open', (id) => {
-                gameIdSpan.textContent = id;
-                gameIdDisplay.classList.add('show');
-                createGameBtn.disabled = true;
-                joinGameBtn.disabled = true;
-                gameIdInput.style.display = 'none';
-            });
+            updateTurnDisplay();
+            updateBoard();
+        }
 
-            peer.on('connection', (connection) => {
-                conn = connection;
-                gameContainer.style.display = 'block';
-                playerTurnDisplay.textContent = 'Current turn: RED';
-                createBoard();
-
-                conn.on('data', (data) => {
-                    if (data.type === 'move') {
-                        const row = getLowestEmptyRow(data.col);
-                        if (row !== -1) {
-                            gameBoard[row][data.col] = currentPlayer;
-                            updateBoard();
-                            
-                            if (checkWin(row, data.col)) {
-                                gameActive = false;
-                                playerTurnDisplay.textContent = `${currentPlayer.toUpperCase()} wins!`;
-                                return;
-                            }
-
-                            currentPlayer = currentPlayer === 'red' ? 'yellow' : 'red';
-                            playerTurnDisplay.textContent = `Current turn: ${currentPlayer.toUpperCase()}`;
-                        }
-                    }
-                });
-            });
+        localModeBtn.addEventListener('click', () => {
+            startGame('local');
         });
 
-        // Join game
-        joinGameBtn.addEventListener('click', () => {
-            gameIdInput.style.display = 'block';
-            gameIdInput.focus();
+        aiModeBtn.addEventListener('click', () => {
+            startGame('ai');
         });
 
-        gameIdInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                const gameId = gameIdInput.value.trim();
-                if (gameId) {
-                    isHost = false;
-                    currentPlayer = 'yellow';
-                    gameActive = true;
-                    gameBoard = Array(6).fill().map(() => Array(7).fill(null));
-
-                    conn = peer.connect(gameId);
-                    conn.on('open', () => {
-                        gameContainer.style.display = 'block';
-                        playerTurnDisplay.textContent = 'Current turn: RED';
-                        createBoard();
-                        createGameBtn.disabled = true;
-                        joinGameBtn.disabled = true;
-                        gameIdInput.style.display = 'none';
-                    });
-
-                    conn.on('data', (data) => {
-                        if (data.type === 'move') {
-                            const row = getLowestEmptyRow(data.col);
-                            if (row !== -1) {
-                                gameBoard[row][data.col] = currentPlayer;
-                                updateBoard();
-                                
-                                if (checkWin(row, data.col)) {
-                                    gameActive = false;
-                                    playerTurnDisplay.textContent = `${currentPlayer.toUpperCase()} wins!`;
-                                    return;
-                                }
-
-                                currentPlayer = currentPlayer === 'red' ? 'yellow' : 'red';
-                                playerTurnDisplay.textContent = `Current turn: ${currentPlayer.toUpperCase()}`;
-                            }
-                        }
-                    });
-                }
-            }
-        });
-
-        // Copy game ID
-        copyGameIdBtn.addEventListener('click', () => {
-            const gameId = gameIdSpan.textContent;
-            navigator.clipboard.writeText(gameId).then(() => {
-                copyGameIdBtn.innerHTML = '<i class="fas fa-check"></i>';
-                setTimeout(() => {
-                    copyGameIdBtn.innerHTML = '<i class="fas fa-copy"></i>';
-                }, 2000);
-            });
-        });
-
-        // Background animation
         const background = document.querySelector('.background-animation');
         document.addEventListener('mousemove', (e) => {
             const x = (e.clientX / window.innerWidth) * 100;
