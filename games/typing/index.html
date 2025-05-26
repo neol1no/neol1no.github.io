@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Speed - neol1no</title>
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ffffff;
+            --secondary-color: #a0a0a0;
+            --accent-color: #7c4dff;
+            --background-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: rgba(124, 77, 255, 0.03);
+            --card-hover: rgba(124, 77, 255, 0.1);
+            --grid-size: 50px;
+            --grid-color: rgba(26, 26, 26, 0.95);
+            --correct-color: #4caf50;
+            --incorrect-color: #f44336;
+            --current-color: #7c4dff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            overflow-x: hidden;
+            height: 100%;
+            overflow-y: scroll;
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-color: var(--background-color);
+            background-image: 
+                linear-gradient(var(--background-color) calc(var(--grid-size) - 1px), var(--grid-color) 1px),
+                linear-gradient(90deg, var(--background-color) calc(var(--grid-size) - 1px), var(--grid-color) 1px);
+            background-size: var(--grid-size) var(--grid-size);
+            opacity: 1;
+        }
+
+        .background-animation::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                var(--accent-color) 0%,
+                transparent 20%
+            );
+            opacity: 0.5;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            mask-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            mask-size: var(--grid-size) var(--grid-size);
+            -webkit-mask-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            -webkit-mask-size: var(--grid-size) var(--grid-size);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .menu-bar {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card-bg);
+            padding: 1rem 1.5rem 0.75rem;
+            border-radius: 0 0 16px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: none;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            z-index: 1000;
+        }
+
+        .menu-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            letter-spacing: -1px;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .back-link {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            background: var(--card-bg);
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 2px solid rgba(124, 77, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-link:hover {
+            background: var(--card-hover);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .game-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 4rem;
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .game-info {
+            display: flex;
+            gap: 2rem;
+            flex: 1;
+            justify-content: flex-start;
+        }
+
+        .info-container {
+            background: var(--background-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .info-label {
+            color: var(--secondary-color);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-value {
+            color: var(--primary-color);
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .game-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .new-game-btn {
+            background: var(--accent-color);
+            color: var(--background-color);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .new-game-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(124, 77, 255, 0.3);
+        }
+
+        .language-select {
+            background: var(--background-color);
+            color: var(--text-color);
+            border: 2px solid var(--accent-color);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .language-select:hover {
+            background: var(--card-hover);
+        }
+
+        .typing-area {
+            background: var(--background-color);
+            border-radius: 8px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            position: relative;
+            min-height: 100px;
+        }
+
+        .text-display {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            line-height: 2;
+            text-align: left;
+        }
+
+        .char {
+            display: inline-block;
+            position: relative;
+            padding: 0 1px;
+        }
+
+        .char.correct {
+            color: var(--correct-color);
+        }
+
+        .char.incorrect {
+            color: var(--incorrect-color);
+            text-decoration: underline;
+        }
+
+        .char.current {
+            background-color: var(--current-color);
+            color: var(--background-color);
+            border-radius: 2px;
+        }
+
+        .input-area {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .result-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .result-content {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .result-stats {
+            display: flex;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-label {
+            color: var(--secondary-color);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            color: var(--primary-color);
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 1rem;
+                margin-top: 3rem;
+            }
+
+            .game-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .game-info {
+                justify-content: center;
+            }
+
+            .typing-area {
+                padding: 1rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation"></div>
+    <div class="container">
+        <a href="../../games.html" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            Back to Games
+        </a>
+
+        <div class="menu-bar">
+            <h1 class="menu-title">Typing Speed</h1>
+        </div>
+
+        <div class="game-container">
+            <div class="game-header">
+                <div class="game-info">
+                    <div class="info-container">
+                        <div class="info-label">WPM</div>
+                        <div class="info-value" id="wpm">0</div>
+                    </div>
+                    <div class="info-container">
+                        <div class="info-label">Accuracy</div>
+                        <div class="info-value" id="accuracy">0%</div>
+                    </div>
+                </div>
+                <div class="game-controls">
+                    <select class="language-select" id="languageSelect">
+                        <option value="en">English</option>
+                        <option value="es">Spanish</option>
+                        <option value="fr">French</option>
+                        <option value="de">German</option>
+                        <option value="it">Italian</option>
+                    </select>
+                    <button class="new-game-btn" id="newGame">New Test</button>
+                </div>
+            </div>
+
+            <div class="typing-area">
+                <div class="text-display" id="text-display"></div>
+                <input type="text" class="input-area" id="typing-input" autocomplete="off" spellcheck="false">
+            </div>
+
+            <div id="result-screen" class="result-screen" style="display: none;">
+                <div class="result-content">
+                    <h2>Test Complete!</h2>
+                    <div class="result-stats">
+                        <div class="stat">
+                            <span class="stat-label">WPM</span>
+                            <span class="stat-value" id="final-wpm">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Accuracy</span>
+                            <span class="stat-value" id="final-accuracy">0%</span>
+                        </div>
+                    </div>
+                    <button id="try-again" class="new-game-btn">Try Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentLanguage = 'en';
+        let currentWords = [];
+        let startTime;
+        let isTestActive = false;
+        let correctChars = 0;
+        let totalChars = 0;
+        let currentRun = 1;
+        let totalRuns = 3;
+        let runResults = [];
+
+        const textDisplay = document.getElementById('text-display');
+        const typingInput = document.getElementById('typing-input');
+        const wpmDisplay = document.getElementById('wpm');
+        const accuracyDisplay = document.getElementById('accuracy');
+        const languageSelect = document.getElementById('languageSelect');
+        const newGameBtn = document.getElementById('newGame');
+        const resultScreen = document.getElementById('result-screen');
+        const finalWpm = document.getElementById('final-wpm');
+        const finalAccuracy = document.getElementById('final-accuracy');
+        const tryAgainButton = document.getElementById('try-again');
+
+        function getWordList(language) {
+            const wordLists = {
+                en: [
+                    "the", "be", "to", "of", "and", "a", "in", "that", "have", "I", "it", "for", "not", "on", "with", "he", "as", "you", "do", "at",
+                    "this", "but", "his", "by", "from", "they", "we", "say", "her", "she", "or", "an", "will", "my", "one", "all", "would", "there", "their", "what",
+                    "so", "up", "out", "if", "about", "who", "get", "which", "go", "me", "when", "make", "can", "like", "time", "no", "just", "him", "know", "take",
+                    "people", "into", "year", "your", "good", "some", "could", "them", "see", "other", "than", "then", "now", "look", "only", "come", "its", "over", "think", "also"
+                ],
+                es: [
+                    "el", "la", "los", "las", "un", "una", "unos", "unas", "y", "o", "pero", "porque", "si", "no", "que", "cual", "quien", "donde", "cuando", "como",
+                    "ser", "estar", "tener", "hacer", "decir", "ir", "venir", "dar", "ver", "saber", "poder", "querer", "deber", "poner", "parecer", "quedar", "llegar", "pasar", "seguir", "encontrar",
+                    "tiempo", "año", "día", "vida", "mundo", "casa", "trabajo", "agua", "tierra", "aire", "sol", "luna", "estrella", "cielo", "mar", "montaña", "río", "árbol", "flor", "animal",
+                    "persona", "hombre", "mujer", "niño", "niña", "padre", "madre", "hermano", "hermana", "amigo", "amiga", "familia", "escuela", "ciudad", "país", "gobierno", "sociedad", "cultura", "historia", "arte"
+                ],
+                fr: [
+                    "le", "la", "les", "un", "une", "des", "et", "ou", "mais", "car", "si", "non", "que", "qui", "quoi", "où", "quand", "comment", "pourquoi", "combien",
+                    "être", "avoir", "faire", "dire", "aller", "venir", "voir", "savoir", "pouvoir", "vouloir", "devoir", "mettre", "prendre", "donner", "parler", "écouter", "lire", "écrire", "penser", "sentir",
+                    "temps", "année", "jour", "vie", "monde", "maison", "travail", "eau", "terre", "air", "soleil", "lune", "étoile", "ciel", "mer", "montagne", "rivière", "arbre", "fleur", "animal",
+                    "personne", "homme", "femme", "enfant", "garçon", "fille", "père", "mère", "frère", "sœur", "ami", "amie", "famille", "école", "ville", "pays", "gouvernement", "société", "culture", "histoire"
+                ],
+                de: [
+                    "der", "die", "das", "und", "ist", "in", "zu", "den", "von", "mit", "sich", "des", "auf", "für", "ist", "im", "dem", "nicht", "ein", "eine",
+                    "sein", "haben", "werden", "können", "müssen", "sagen", "machen", "gehen", "kommen", "geben", "sehen", "wissen", "wollen", "sollen", "stehen", "liegen", "bleiben", "finden", "denken", "nehmen",
+                    "Zeit", "Jahr", "Tag", "Leben", "Welt", "Haus", "Arbeit", "Wasser", "Erde", "Luft", "Sonne", "Mond", "Stern", "Himmel", "Meer", "Berg", "Fluss", "Baum", "Blume", "Tier",
+                    "Person", "Mann", "Frau", "Kind", "Junge", "Mädchen", "Vater", "Mutter", "Bruder", "Schwester", "Freund", "Freundin", "Familie", "Schule", "Stadt", "Land", "Regierung", "Gesellschaft", "Kultur", "Geschichte"
+                ],
+                it: [
+                    "il", "la", "le", "un", "una", "e", "è", "in", "che", "di", "non", "sono", "per", "con", "si", "del", "della", "nel", "nella", "come",
+                    "essere", "avere", "fare", "dire", "andare", "venire", "dare", "vedere", "sapere", "potere", "volere", "dovere", "mettere", "prendere", "parlare", "ascoltare", "leggere", "scrivere", "pensare", "sentire",
+                    "tempo", "anno", "giorno", "vita", "mondo", "casa", "lavoro", "acqua", "terra", "aria", "sole", "luna", "stella", "cielo", "mare", "montagna", "fiume", "albero", "fiore", "animale",
+                    "persona", "uomo", "donna", "bambino", "ragazzo", "ragazza", "padre", "madre", "fratello", "sorella", "amico", "amica", "famiglia", "scuola", "città", "paese", "governo", "società", "cultura", "storia"
+                ]
+            };
+            return wordLists[language] || wordLists.en;
+        }
+
+        function startTest() {
+            if (isTestActive) return;
+            const selectedLanguage = languageSelect.value;
+            currentLanguage = selectedLanguage;
+            currentWords = getWordList(selectedLanguage).slice();
+            shuffleArray(currentWords);
+            currentWords = currentWords.slice(0, 10);
+            correctChars = 0;
+            totalChars = 0;
+            isTestActive = true;
+            resultScreen.style.display = 'none';
+            displayRun();
+            displayText();
+            typingInput.value = '';
+            typingInput.focus();
+            startTime = Date.now();
+            updateStats();
+        }
+
+        function endRun() {
+            isTestActive = false;
+            const elapsedMinutes = (Date.now() - startTime) / 60000;
+            const wpm = Math.round((correctChars / 5) / Math.max(elapsedMinutes, 0.016));
+            const accuracy = totalChars > 0 ? Math.round((correctChars / totalChars) * 100) : 0;
+            runResults.push({ wpm, accuracy });
+            if (currentRun < totalRuns) {
+                currentRun++;
+                displayRun();
+                setTimeout(() => { startTest(); }, 1000);
+            } else {
+                finalWpm.textContent = Math.round(runResults.reduce((a, b) => a + b.wpm, 0) / totalRuns);
+                finalAccuracy.textContent = Math.round(runResults.reduce((a, b) => a + b.accuracy, 0) / totalRuns) + '%';
+                resultScreen.style.display = 'flex';
+            }
+        }
+
+        function displayRun() {
+            let info = document.getElementById('run-info');
+            if (!info) {
+                info = document.createElement('div');
+                info.id = 'run-info';
+                info.style.textAlign = 'center';
+                info.style.marginBottom = '1rem';
+                info.style.fontSize = '1.1rem';
+                info.style.color = 'var(--accent-color)';
+                document.querySelector('.game-container').insertBefore(info, document.querySelector('.game-header').nextSibling);
+            }
+            info.textContent = `Run: ${currentRun} / ${totalRuns}`;
+        }
+
+        function displayText() {
+            textDisplay.innerHTML = '';
+            const container = document.createElement('div');
+            container.style.display = 'flex';
+            container.style.flexWrap = 'wrap';
+            container.style.alignItems = 'center';
+            container.style.gap = '0.25em';
+            currentWords.forEach((word, idx) => {
+                const wordSpan = document.createElement('span');
+                wordSpan.style.display = 'inline-block';
+                for (let c = 0; c < word.length; c++) {
+                    const charSpan = document.createElement('span');
+                    charSpan.className = 'char';
+                    charSpan.textContent = word[c];
+                    wordSpan.appendChild(charSpan);
+                }
+                container.appendChild(wordSpan);
+                if (idx < currentWords.length - 1) {
+                    const spaceSpan = document.createElement('span');
+                    spaceSpan.className = 'char';
+                    spaceSpan.textContent = ' ';
+                    container.appendChild(spaceSpan);
+                }
+            });
+            textDisplay.appendChild(container);
+            typingInput.value = '';
+            typingInput.focus();
+        }
+
+        function updateStats() {
+            if (!isTestActive) return;
+            const elapsedMinutes = (Date.now() - startTime) / 60000;
+            const wpm = Math.round((correctChars / 5) / Math.max(elapsedMinutes, 0.016));
+            const accuracy = totalChars > 0 ? Math.round((correctChars / totalChars) * 100) : 0;
+            wpmDisplay.textContent = wpm;
+            accuracyDisplay.textContent = accuracy + '%';
+            requestAnimationFrame(updateStats);
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        typingInput.addEventListener('input', (e) => {
+            if (!isTestActive) return;
+            const inputValue = e.target.value;
+            const chars = textDisplay.getElementsByClassName('char');
+            for (let i = 0; i < chars.length; i++) {
+                chars[i].classList.remove('current', 'correct', 'incorrect');
+            }
+            let localCorrect = 0;
+            let localTotal = 0;
+            for (let i = 0; i < inputValue.length; i++) {
+                if (i < chars.length) {
+                    if (inputValue[i] === chars[i].textContent) {
+                        chars[i].classList.add('correct');
+                        localCorrect++;
+                    } else {
+                        chars[i].classList.add('incorrect');
+                    }
+                    localTotal++;
+                }
+            }
+            if (inputValue.length < chars.length) {
+                chars[inputValue.length].classList.add('current');
+            }
+            correctChars = localCorrect;
+            totalChars = localTotal;
+            if (inputValue.length === chars.length) {
+                isTestActive = false;
+                setTimeout(() => {
+                    endRun();
+                }, 100);
+            }
+        });
+
+        newGameBtn.addEventListener('click', () => {
+            currentRun = 1;
+            runResults = [];
+            displayRun();
+            startTest();
+        });
+        tryAgainButton.addEventListener('click', () => {
+            currentRun = 1;
+            runResults = [];
+            displayRun();
+            startTest();
+        });
+        languageSelect.addEventListener('change', () => {
+            if (isTestActive) {
+                isTestActive = false;
+            }
+            currentRun = 1;
+            runResults = [];
+            displayRun();
+            startTest();
+        });
+    </script>
+</body>
+</html> 

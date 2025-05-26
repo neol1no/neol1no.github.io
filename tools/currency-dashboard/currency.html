@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Details - neol1no</title>
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <style>
+        :root {
+            --primary-color: #ffffff;
+            --secondary-color: #a0a0a0;
+            --accent-color: #7c4dff;
+            --background-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: rgba(124, 77, 255, 0.03);
+            --card-hover: rgba(124, 77, 255, 0.1);
+            --positive-color: #4caf50;
+            --negative-color: #f44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            overflow-x: hidden;
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(124, 77, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(157, 78, 221, 0.1) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            background: var(--card-bg);
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 2px solid rgba(124, 77, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            background: var(--card-hover);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .currency-header {
+            text-align: center;
+            padding: 4rem 0;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        .currency-name {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .currency-symbol {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+        }
+
+        .price-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 2px solid rgba(124, 77, 255, 0.1);
+        }
+
+        .current-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .price-change {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+        }
+
+        .positive {
+            background: rgba(76, 175, 80, 0.1);
+            color: var(--positive-color);
+        }
+
+        .negative {
+            background: rgba(244, 67, 54, 0.1);
+            color: var(--negative-color);
+        }
+
+        .chart-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 2px solid rgba(124, 77, 255, 0.1);
+            height: 400px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 2px solid rgba(124, 77, 255, 0.1);
+        }
+
+        .stat-title {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .time-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .time-filter {
+            background: var(--background-color);
+            border: 1px solid rgba(124, 77, 255, 0.2);
+            color: var(--text-color);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .time-filter:hover, .time-filter.active {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .currency-name {
+                font-size: 2rem;
+            }
+
+            .current-price {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation"></div>
+    <a href="index.html" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Back to Dashboard
+    </a>
+    <div class="container">
+        <div class="currency-header">
+            <h1 class="currency-name" id="currencyName">Loading...</h1>
+            <div class="currency-symbol" id="currencySymbol"></div>
+        </div>
+
+        <div class="price-section">
+            <div class="current-price" id="currentPrice">Loading...</div>
+            <div class="price-change" id="priceChange"></div>
+        </div>
+
+        <div class="chart-container">
+            <div class="time-filters">
+                <button class="time-filter active" data-days="1">24h</button>
+                <button class="time-filter crypto-only" data-days="7">7d</button>
+                <button class="time-filter crypto-only" data-days="30">30d</button>
+                <button class="time-filter crypto-only" data-days="90">90d</button>
+                <button class="time-filter crypto-only" data-days="365">1y</button>
+            </div>
+            <canvas id="priceChart"></canvas>
+        </div>
+
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card crypto-only" style="display: none;">
+                <div class="stat-title">Market Cap</div>
+                <div class="stat-value" id="marketCap">Loading...</div>
+            </div>
+            <div class="stat-card crypto-only" style="display: none;">
+                <div class="stat-title">24h Volume</div>
+                <div class="stat-value" id="volume24h">Loading...</div>
+            </div>
+            <div class="stat-card crypto-only" style="display: none;">
+                <div class="stat-title">Circulating Supply</div>
+                <div class="stat-value" id="circulatingSupply">Loading...</div>
+            </div>
+            <div class="stat-card crypto-only" style="display: none;">
+                <div class="stat-title">All Time High</div>
+                <div class="stat-value" id="ath">Loading...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="currency.js"></script>
+</body>
+</html> 

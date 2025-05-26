@@ -19,22 +19,6 @@
             --grid-color: rgba(26, 26, 26, 0.95);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--background-color);
-            overflow-x: hidden;
-            height: 100%;
-            overflow-y: scroll;
-        }
-
         .background-animation {
             position: fixed;
             top: 0;
@@ -75,28 +59,195 @@
             -webkit-mask-size: var(--grid-size) var(--grid-size);
         }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            overflow-x: hidden;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 2rem;
-            position: relative;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
         }
 
-        .page-title {
+        header {
+            text-align: center;
+            padding: 4rem 0;
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
             font-size: 3.5rem;
-            margin: 2rem 0 3rem;
+            margin-bottom: 1rem;
             color: var(--primary-color);
             font-weight: 700;
             letter-spacing: -1px;
-            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: gradientFlow 8s ease infinite;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::before {
+            content: '<';
+            color: var(--accent-color);
+            margin-right: 0.5rem;
+        }
+
+        h1::after {
+            content: '/>';
+            color: var(--accent-color);
+            margin-left: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            position: relative;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out forwards;
+            animation-delay: 0.1s;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            background: var(--card-bg);
+            border: 2px solid rgba(124, 77, 255, 0.2);
+            border-radius: 8px;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(124, 77, 255, 0.1);
+        }
+
+        .search-bar::placeholder {
+            color: var(--secondary-color);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent-color);
+            pointer-events: none;
+        }
+
+        .game-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 2px solid rgba(124, 77, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out forwards;
+            text-decoration: none;
+            color: var(--text-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+            background: var(--card-hover);
+        }
+
+        .game-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .game-card h2 {
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .game-card p {
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .game-card .category {
+            display: inline-block;
+            background: rgba(124, 77, 255, 0.1);
+            color: var(--accent-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(124, 77, 255, 0.2);
+        }
+
+        .game-card .date {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            margin-top: 1rem;
         }
 
         .back-link {
@@ -123,152 +274,18 @@
             transform: translateY(-2px);
         }
 
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            background: var(--card-bg);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            max-width: 600px;
-            width: 100%;
-        }
-
-        .empty-icon {
-            font-size: 4rem;
-            color: var(--accent-color);
-            margin-bottom: 1.5rem;
-            opacity: 0.5;
-        }
-
-        .empty-title {
-            font-size: 2rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
-
-        .empty-description {
-            color: var(--secondary-color);
-            font-size: 1rem;
-        }
-
-        .menu-link {
-            color: var(--accent-color);
-            text-decoration: none;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
-            background: rgba(124, 77, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .menu-link:hover {
-            background: var(--accent-color);
-            color: var(--background-color);
-            transform: translateY(-2px);
-        }
-
-        @keyframes gradientFlow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        @media (max-width: 768px) {
-            .page-title {
-                font-size: 2.5rem;
-                margin-bottom: 2rem;
-            }
-
-            .empty-state {
-                padding: 3rem 1.5rem;
-            }
-
-            .empty-icon {
-                font-size: 3rem;
-            }
-
-            .empty-title {
-                font-size: 1.5rem;
-            }
-
-            .empty-description {
-                font-size: 1rem;
-            }
-        }
-
-        .games-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-            width: 100%;
-            max-width: 1200px;
-        }
-
-        @media (max-width: 1200px) {
-            .games-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
         @media (max-width: 768px) {
             .games-grid {
                 grid-template-columns: 1fr;
             }
-        }
 
-        .game-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: var(--text-color);
-        }
+            h1 {
+                font-size: 2.5rem;
+            }
 
-        .game-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent-color);
-            box-shadow: 0 10px 30px rgba(124, 77, 255, 0.1);
-        }
-
-        .game-icon {
-            font-size: 2.5rem;
-            color: var(--accent-color);
-            margin-bottom: 1rem;
-        }
-
-        .game-title {
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
-
-        .game-description {
-            color: var(--secondary-color);
-            margin-bottom: 1.5rem;
-            font-size: 0.95rem;
-        }
-
-        .game-link {
-            color: var(--accent-color);
-            text-decoration: none;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            background: rgba(124, 77, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .game-link:hover {
-            background: var(--accent-color);
-            color: var(--background-color);
+            .subtitle {
+                font-size: 1.2rem;
+            }
         }
     </style>
 </head>
@@ -279,28 +296,69 @@
             <i class="fas fa-arrow-left"></i>
             Back to Menu
         </a>
-        <h1 class="page-title">Games</h1>
+
+        <header>
+            <h1>Games</h1>
+            <p class="subtitle">A collection of fun web games</p>
+        </header>
+
+        <div class="search-container">
+            <input type="text" class="search-bar" placeholder="Search games..." id="searchInput">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+
         <div class="games-grid">
-            <div class="game-card">
-                <i class="fas fa-gamepad game-icon"></i>
-                <h2 class="game-title">Connect 4</h2>
-                <p class="game-description">Play Connect 4 with a friend in real-time!</p>
-                <a href="games/connect4" class="game-link">
-                    Play Now
-                    <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
+            <a href="games/typing/index.html" class="game-card">
+                <h2><i class="fas fa-keyboard"></i> Typing Speed Test</h2>
+                <span class="category">Skill</span>
+                <p>Test and improve your typing speed with this interactive typing test. Features multiple languages and real-time statistics.</p>
+            </a>
+            <a href="games/connect4/index.html" class="game-card">
+                <h2><i class="fas fa-gamepad"></i> Connect 4</h2>
+                <span class="category">Strategy</span>
+                <p>Challenge yourself in this classic two-player strategy game. Connect four discs in a row to win!</p>
+            </a>
+            <a href="games/2048/index.html" class="game-card">
+                <h2><i class="fas fa-th"></i> 2048</h2>
+                <span class="category">Puzzle</span>
+                <p>Join the numbers to get to the 2048 tile! A challenging puzzle game that tests your strategic thinking.</p>
+            </a>
+            <a href="games/minesweeper/index.html" class="game-card">
+                <h2><i class="fas fa-bomb"></i> Minesweeper</h2>
+                <span class="category">Puzzle</span>
+                <p>Test your logic and luck in this classic puzzle game. Avoid the mines and reveal all safe cells!</p>
+            </a>
+            <a href="games/tetris/index.html" class="game-card">
+                <h2><i class="fas fa-shapes"></i> Tetris</h2>
+                <span class="category">Puzzle</span>
+                <p>Stack and clear lines in this timeless puzzle game. How high can you score?</p>
+            </a>
         </div>
     </div>
 
     <script>
-        const background = document.querySelector('.background-animation');
-
         document.addEventListener('mousemove', (e) => {
-            const x = (e.clientX / window.innerWidth) * 100;
-            const y = (e.clientY / window.innerHeight) * 100;
-            background.style.setProperty('--mouse-x', `${x}%`);
-            background.style.setProperty('--mouse-y', `${y}%`);
+            document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
+            document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
+        });
+
+        const searchInput = document.getElementById('searchInput');
+        const gameCards = document.querySelectorAll('.game-card');
+
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            gameCards.forEach(card => {
+                const title = card.querySelector('h2').textContent.toLowerCase();
+                const description = card.querySelector('p').textContent.toLowerCase();
+                const category = card.querySelector('.category').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm) || category.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
         });
     </script>
 </body>

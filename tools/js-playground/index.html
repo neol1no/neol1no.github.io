@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JS Obfuscator - neol1no</title>
+    <title>JS Playground - neol1no</title>
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
@@ -18,8 +18,11 @@
             --card-bg: rgba(124, 77, 255, 0.03);
             --card-hover: rgba(124, 77, 255, 0.1);
             --editor-bg: #282a36;
+            --console-bg: #1e1e1e;
             --success-color: #50fa7b;
             --error-color: #ff5555;
+            --warning-color: #ffb86c;
+            --info-color: #8be9fd;
         }
 
         * {
@@ -50,39 +53,19 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 2rem;
         }
 
         header {
             text-align: center;
-            padding: 4rem 0;
+            padding: 2rem 0;
             margin-bottom: 2rem;
-            opacity: 0;
-            animation: fadeIn 1s ease-out forwards;
-            position: relative;
-        }
-
-        header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 4px;
-            background: var(--accent-color);
-            border-radius: 2px;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         h1 {
-            font-size: 3.5rem;
+            font-size: 2.5rem;
             margin-bottom: 1rem;
             color: var(--primary-color);
             font-weight: 700;
@@ -104,10 +87,9 @@
         }
 
         .subtitle {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             color: var(--secondary-color);
-            margin-bottom: 2rem;
-            font-weight: 300;
+            margin-bottom: 1rem;
         }
 
         .back-button {
@@ -139,9 +121,6 @@
             grid-template-columns: 1fr 1fr;
             gap: 2rem;
             margin-bottom: 2rem;
-            opacity: 0;
-            animation: fadeIn 0.8s ease-out forwards;
-            animation-delay: 0.2s;
         }
 
         .editor-wrapper {
@@ -149,6 +128,8 @@
             border-radius: 12px;
             overflow: hidden;
             border: 2px solid rgba(124, 77, 255, 0.1);
+            display: flex;
+            flex-direction: column;
         }
 
         .editor-header {
@@ -197,78 +178,79 @@
         }
 
         .CodeMirror {
-            height: 500px;
+            flex: 1;
             font-family: 'Fira Code', monospace;
             font-size: 14px;
         }
 
-        .options-panel {
-            background: var(--card-bg);
+        .console-wrapper {
+            background: var(--console-bg);
             border-radius: 12px;
-            padding: 1.5rem;
+            overflow: hidden;
             border: 2px solid rgba(124, 77, 255, 0.1);
-            margin-bottom: 2rem;
-            opacity: 0;
-            animation: fadeIn 0.8s ease-out forwards;
-            animation-delay: 0.1s;
-        }
-
-        .options-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .option-group {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            height: 500px;
         }
 
-        .option-group h3 {
-            color: var(--accent-color);
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .option-item {
+        .console-header {
+            background: rgba(124, 77, 255, 0.1);
+            padding: 0.8rem 1rem;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 0.8rem;
+            border-bottom: 2px solid rgba(124, 77, 255, 0.1);
         }
 
-        .option-item label {
-            color: var(--text-color);
-            font-size: 0.95rem;
-            cursor: pointer;
+        .console-output {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            word-break: break-word;
         }
 
-        .option-item input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--accent-color);
-            cursor: pointer;
-        }
-
-        .option-item input[type="number"] {
-            width: 80px;
-            background: var(--editor-bg);
-            border: 1px solid rgba(124, 77, 255, 0.2);
-            color: var(--text-color);
-            padding: 0.4rem;
+        .console-line {
+            margin-bottom: 0.5rem;
+            padding: 0.3rem 0.5rem;
             border-radius: 4px;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
         }
 
-        .option-item select {
-            background: var(--editor-bg);
-            border: 1px solid rgba(124, 77, 255, 0.2);
+        .console-line.log {
             color: var(--text-color);
-            padding: 0.4rem;
-            border-radius: 4px;
-            cursor: pointer;
         }
 
-        .obfuscate-button {
+        .console-line.info {
+            color: var(--info-color);
+            background: rgba(139, 233, 253, 0.1);
+        }
+
+        .console-line.warn {
+            color: var(--warning-color);
+            background: rgba(255, 184, 108, 0.1);
+        }
+
+        .console-line.error {
+            color: var(--error-color);
+            background: rgba(255, 85, 85, 0.1);
+        }
+
+        .console-line .timestamp {
+            color: var(--secondary-color);
+            font-size: 0.8rem;
+            min-width: 60px;
+        }
+
+        .console-line .content {
+            flex: 1;
+        }
+
+        .run-button {
             background: var(--accent-color);
             color: var(--text-color);
             border: none;
@@ -282,17 +264,14 @@
             align-items: center;
             gap: 0.8rem;
             margin: 0 auto;
-            opacity: 0;
-            animation: fadeIn 0.8s ease-out forwards;
-            animation-delay: 0.3s;
         }
 
-        .obfuscate-button:hover {
+        .run-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(124, 77, 255, 0.2);
         }
 
-        .obfuscate-button:active {
+        .run-button:active {
             transform: translateY(0);
         }
 
@@ -328,14 +307,14 @@
             }
 
             h1 {
-                font-size: 2.5rem;
+                font-size: 2rem;
             }
 
             .subtitle {
-                font-size: 1.2rem;
+                font-size: 1rem;
             }
 
-            .CodeMirror {
+            .CodeMirror, .console-wrapper {
                 height: 300px;
             }
         }
@@ -343,82 +322,25 @@
 </head>
 <body>
     <div class="background-animation"></div>
-    <a href="../../projects.html" class="back-button">
+    <a href="../../tools.html" class="back-button">
         <i class="fas fa-arrow-left"></i>
-        Back to Projects
+        Back to Tools
     </a>
     <div class="container">
         <header>
-            <h1>JS Obfuscator</h1>
-            <p class="subtitle">Advanced JavaScript code obfuscation tool with multiple protection layers</p>
+            <h1>JS Playground</h1>
+            <p class="subtitle">A secure JavaScript playground with console output</p>
         </header>
-
-        <div class="options-panel">
-            <div class="options-grid">
-                <div class="option-group">
-                    <h3>Basic Protection</h3>
-                    <div class="option-item">
-                        <input type="checkbox" id="stringArray" checked>
-                        <label for="stringArray">String Array Transformation</label>
-                    </div>
-                    <div class="option-item">
-                        <input type="checkbox" id="identifierNames" checked>
-                        <label for="identifierNames">Identifier Renaming</label>
-                    </div>
-                    <div class="option-item">
-                        <input type="checkbox" id="deadCode" checked>
-                        <label for="deadCode">Dead Code Injection</label>
-                    </div>
-                </div>
-
-                <div class="option-group">
-                    <h3>Advanced Protection</h3>
-                    <div class="option-item">
-                        <input type="checkbox" id="controlFlow" checked>
-                        <label for="controlFlow">Control Flow Flattening</label>
-                    </div>
-                    <div class="option-item">
-                        <input type="checkbox" id="selfDefending" checked>
-                        <label for="selfDefending">Self Defending</label>
-                    </div>
-                    <div class="option-item">
-                        <input type="checkbox" id="debugProtection" checked>
-                        <label for="debugProtection">Debug Protection</label>
-                    </div>
-                </div>
-
-                <div class="option-group">
-                    <h3>Customization</h3>
-                    <div class="option-item">
-                        <label for="stringArrayThreshold">String Array Threshold:</label>
-                        <input type="number" id="stringArrayThreshold" value="0.75" min="0" max="1" step="0.1">
-                    </div>
-                    <div class="option-item">
-                        <label for="controlFlowComplexity">Control Flow Complexity:</label>
-                        <select id="controlFlowComplexity">
-                            <option value="1">Low</option>
-                            <option value="2" selected>Medium</option>
-                            <option value="3">High</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <div class="editor-container">
             <div class="editor-wrapper">
                 <div class="editor-header">
                     <div class="editor-title">
                         <i class="fas fa-code"></i>
-                        Source Code
+                        Code Editor
                     </div>
                     <div class="editor-actions">
-                        <button class="editor-button" id="uploadFile">
-                            <i class="fas fa-upload"></i>
-                            Upload File
-                        </button>
-                        <input type="file" id="fileInput" accept=".js" style="display: none">
-                        <button class="editor-button" id="clearSource">
+                        <button class="editor-button" id="clearCode">
                             <i class="fas fa-trash"></i>
                             Clear
                         </button>
@@ -428,33 +350,29 @@
                         </button>
                     </div>
                 </div>
-                <textarea id="sourceEditor"></textarea>
+                <textarea id="codeEditor"></textarea>
             </div>
 
-            <div class="editor-wrapper">
-                <div class="editor-header">
+            <div class="console-wrapper">
+                <div class="console-header">
                     <div class="editor-title">
-                        <i class="fas fa-shield-alt"></i>
-                        Obfuscated Code
+                        <i class="fas fa-terminal"></i>
+                        Console Output
                     </div>
                     <div class="editor-actions">
-                        <button class="editor-button" id="copyOutput">
-                            <i class="fas fa-copy"></i>
-                            Copy
-                        </button>
-                        <button class="editor-button" id="downloadOutput">
-                            <i class="fas fa-download"></i>
-                            Download
+                        <button class="editor-button" id="clearConsole">
+                            <i class="fas fa-trash"></i>
+                            Clear Console
                         </button>
                     </div>
                 </div>
-                <textarea id="outputEditor"></textarea>
+                <div class="console-output" id="consoleOutput"></div>
             </div>
         </div>
 
-        <button class="obfuscate-button" id="obfuscateButton">
-            <i class="fas fa-shield-alt"></i>
-            Obfuscate Code
+        <button class="run-button" id="runButton">
+            <i class="fas fa-play"></i>
+            Run Code
         </button>
 
         <div class="status-message" id="statusMessage"></div>
@@ -469,7 +387,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/fold/brace-fold.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/fold/comment-fold.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/fold/foldgutter.min.css"></script>
-    <script src="https://cdn.jsdelivr.net/npm/javascript-obfuscator@4.1.0/dist/index.browser.js"></script>
     <script src="app.js"></script>
 </body>
 </html> 

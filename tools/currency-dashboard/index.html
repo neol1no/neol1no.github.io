@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Dashboard - neol1no</title>
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ffffff;
+            --secondary-color: #a0a0a0;
+            --accent-color: #7c4dff;
+            --background-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: rgba(124, 77, 255, 0.03);
+            --card-hover: rgba(124, 77, 255, 0.1);
+            --positive-color: #4caf50;
+            --negative-color: #f44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            overflow-x: hidden;
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(124, 77, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(157, 78, 221, 0.1) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            padding: 4rem 0;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            letter-spacing: -1px;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::before {
+            content: '<';
+            color: var(--accent-color);
+            margin-right: 0.5rem;
+        }
+
+        h1::after {
+            content: '/>';
+            color: var(--accent-color);
+            margin-left: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            background: var(--card-bg);
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 2px solid rgba(124, 77, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            background: var(--card-hover);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .currency-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 2px solid rgba(124, 77, 255, 0.1);
+        }
+
+        .currency-section h2 {
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .currency-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .currency-card {
+            background: var(--background-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid rgba(124, 77, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .currency-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-color);
+        }
+
+        .currency-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .currency-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .currency-symbol {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+        }
+
+        .currency-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .currency-change {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .positive {
+            color: var(--positive-color);
+        }
+
+        .negative {
+            color: var(--negative-color);
+        }
+
+        .refresh-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--accent-color);
+            color: var(--background-color);
+            border: none;
+            padding: 1rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(124, 77, 255, 0.2);
+        }
+
+        .refresh-button:hover {
+            transform: rotate(180deg);
+            box-shadow: 0 6px 16px rgba(124, 77, 255, 0.3);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--secondary-color);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .search-container {
+            position: relative;
+            min-width: 250px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.5rem 2.5rem 0.5rem 1rem;
+            background: var(--background-color);
+            border: 1px solid rgba(124, 77, 255, 0.2);
+            border-radius: 8px;
+            color: var(--text-color);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: var(--secondary-color);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-color);
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .currency-section {
+                padding: 1.5rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-container {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation"></div>
+    <a href="../../menu.html" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Back to Menu
+    </a>
+    <div class="container">
+        <header>
+            <h1>Currency Dashboard</h1>
+            <p class="subtitle">Live cryptocurrency and fiat currency rates</p>
+        </header>
+
+        <div class="dashboard-container">
+            <div class="currency-section">
+                <div class="section-header">
+                    <h2>Cryptocurrencies</h2>
+                </div>
+                <div class="currency-grid" id="cryptoGrid">
+                    <div class="loading">Loading cryptocurrency data...</div>
+                </div>
+            </div>
+
+            <div class="currency-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-dollar-sign"></i> Fiat Currencies</h2>
+                    <div class="search-container">
+                        <input type="text" class="search-input" id="fiatSearch" placeholder="Search fiat currencies...">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+                </div>
+                <div class="currency-grid" id="fiatGrid">
+                    <div class="loading">Loading fiat currencies...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="refresh-button" id="refreshButton">
+        <i class="fas fa-sync-alt"></i>
+    </button>
+
+    <script src="app.js"></script>
+</body>
+</html> 

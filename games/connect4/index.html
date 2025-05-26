@@ -416,7 +416,7 @@
                 <div class="stat-item">
                     <div class="stat-value" id="draws">0</div>
                     <div class="stat-label">Draws</div>
-                </div>
+            </div>
             </div>
         </div>
 
@@ -633,7 +633,7 @@
 
                 if (opponentThreats > 0) {
                     score -= 200 * opponentThreats;
-                }
+            }
 
                 const connections = countConnections(row, col, tempBoard);
                 score += connections * 10;
@@ -831,16 +831,16 @@
             gameActive = true;
             gameBoard = Array(6).fill().map(() => Array(7).fill(null));
             updateTurnDisplay();
-            updateBoard();
+                            updateBoard();
         }
 
         localModeBtn.addEventListener('click', () => {
             startGame('local');
-        });
+                    });
 
         aiModeBtn.addEventListener('click', () => {
             startGame('ai');
-        });
+            });
 
         const background = document.querySelector('.background-animation');
         document.addEventListener('mousemove', (e) => {

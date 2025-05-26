@@ -220,6 +220,31 @@
                 margin-bottom: 3rem;
             }
         }
+
+        .fingerprint-button {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card-bg);
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 2px solid rgba(124, 77, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .fingerprint-button:hover {
+            background: var(--card-hover);
+            border-color: var(--accent-color);
+            transform: translateX(-50%) translateY(-2px);
+        }
     </style>
 </head>
 <body>
@@ -259,6 +284,10 @@
                 </a>
             </div>
         </div>
+        <a href="tools/fingerprint/index.html" class="fingerprint-button">
+            <i class="fas fa-fingerprint"></i>
+            My Fingerprint?
+        </a>
     </div>
 
     <script>

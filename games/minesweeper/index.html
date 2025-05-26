@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minesweeper - neol1no</title>
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ffffff;
+            --secondary-color: #a0a0a0;
+            --accent-color: #7c4dff;
+            --background-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: rgba(124, 77, 255, 0.03);
+            --card-hover: rgba(124, 77, 255, 0.1);
+            --grid-size: 50px;
+            --grid-color: rgba(26, 26, 26, 0.95);
+            --cell-size: 40px;
+            --cell-color: #2c2c2c;
+            --cell-hover: #3c3c3c;
+            --cell-revealed: #1c1c1c;
+            --mine-color: #ff4d4d;
+            --flag-color: #ffd700;
+            --number-1: #4d4dff;
+            --number-2: #4dff4d;
+            --number-3: #ff4d4d;
+            --number-4: #4d4dff;
+            --number-5: #ff4d4d;
+            --number-6: #4dff4d;
+            --number-7: #ff4d4d;
+            --number-8: #4d4dff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            overflow-x: hidden;
+            height: 100%;
+            overflow-y: scroll;
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-color: var(--background-color);
+            background-image: 
+                linear-gradient(var(--background-color) calc(var(--grid-size) - 1px), var(--grid-color) 1px),
+                linear-gradient(90deg, var(--background-color) calc(var(--grid-size) - 1px), var(--grid-color) 1px);
+            background-size: var(--grid-size) var(--grid-size);
+            opacity: 1;
+        }
+
+        .background-animation::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                var(--accent-color) 0%,
+                transparent 20%
+            );
+            opacity: 0.5;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            mask-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            mask-size: var(--grid-size) var(--grid-size);
+            -webkit-mask-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            -webkit-mask-size: var(--grid-size) var(--grid-size);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .menu-bar {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card-bg);
+            padding: 1rem 1.5rem 0.75rem;
+            border-radius: 0 0 16px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: none;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            z-index: 1000;
+        }
+
+        .menu-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            letter-spacing: -1px;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .back-link {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            background: var(--card-bg);
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 2px solid rgba(124, 77, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-link:hover {
+            background: var(--card-hover);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .game-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 4rem;
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            width: 100%;
+        }
+
+        .game-info {
+            display: flex;
+            gap: 1rem;
+            flex: 1;
+            justify-content: flex-start;
+        }
+
+        .game-controls {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .info-container {
+            background: var(--background-color);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .info-label {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-value {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .difficulty-selector {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .difficulty-btn {
+            background: var(--card-bg);
+            color: var(--text-color);
+            border: 2px solid var(--accent-color);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .difficulty-btn:hover {
+            background: var(--card-hover);
+        }
+
+        .difficulty-btn.active {
+            background: var(--accent-color);
+            color: var(--background-color);
+        }
+
+        .new-game-btn, .ai-btn {
+            background: var(--accent-color);
+            color: var(--background-color);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .new-game-btn:hover, .ai-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(124, 77, 255, 0.3);
+        }
+
+        .ai-btn {
+            background: var(--card-bg);
+            color: var(--accent-color);
+            border: 2px solid var(--accent-color);
+        }
+
+        .ai-btn:hover {
+            background: var(--accent-color);
+            color: var(--background-color);
+        }
+
+        .ai-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .game-board {
+            background: var(--background-color);
+            border-radius: 8px;
+            padding: 1rem;
+            position: relative;
+            display: grid;
+            gap: 2px;
+            margin: 0 auto;
+        }
+
+        .cell {
+            width: var(--cell-size);
+            height: var(--cell-size);
+            background: var(--cell-color);
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+            position: relative;
+        }
+
+        .cell:hover {
+            background: var(--cell-hover);
+        }
+
+        .cell.revealed {
+            background: var(--cell-revealed);
+            cursor: default;
+        }
+
+        .cell.mine {
+            background: var(--mine-color);
+        }
+
+        .cell.flagged {
+            color: var(--flag-color);
+        }
+
+        .cell.flagged::before {
+            content: '\f024';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: var(--flag-color);
+            font-size: 1.2rem;
+        }
+
+        .cell.flagged:hover::before {
+            content: '\f00d';
+        }
+
+        .cell[data-number="1"] { color: var(--number-1); }
+        .cell[data-number="2"] { color: var(--number-2); }
+        .cell[data-number="3"] { color: var(--number-3); }
+        .cell[data-number="4"] { color: var(--number-4); }
+        .cell[data-number="5"] { color: var(--number-5); }
+        .cell[data-number="6"] { color: var(--number-6); }
+        .cell[data-number="7"] { color: var(--number-7); }
+        .cell[data-number="8"] { color: var(--number-8); }
+
+        .game-over {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .game-over.show {
+            display: flex;
+        }
+
+        .game-over-text {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .game-over-btn {
+            background: var(--accent-color);
+            color: var(--background-color);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .game-over-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(124, 77, 255, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 1rem;
+                margin-top: 3rem;
+            }
+
+            .game-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .game-info {
+                justify-content: center;
+            }
+
+            .new-game-btn {
+                margin-left: 0;
+            }
+
+            .difficulty-btn {
+                max-width: 150px;
+            }
+
+            .game-board {
+                gap: 1px;
+                padding: 0.5rem;
+            }
+
+            .cell {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation"></div>
+    <div class="container">
+        <a href="../../games.html" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            Back to Games
+        </a>
+
+        <div class="menu-bar">
+            <h1 class="menu-title">Minesweeper</h1>
+        </div>
+
+        <div class="game-container">
+            <div class="difficulty-selector">
+                <button class="difficulty-btn active" data-difficulty="beginner">Beginner</button>
+                <button class="difficulty-btn" data-difficulty="intermediate">Intermediate</button>
+                <button class="difficulty-btn" data-difficulty="expert">Expert</button>
+            </div>
+
+            <div class="game-header">
+                <div class="game-info">
+                    <div class="info-container">
+                        <div class="info-label">Mines</div>
+                        <div class="info-value" id="minesCount">0</div>
+                    </div>
+                    <div class="info-container">
+                        <div class="info-label">Time</div>
+                        <div class="info-value" id="timer">0</div>
+                    </div>
+                </div>
+                <div class="game-controls">
+                    <button class="ai-btn" id="aiBtn">AI Solve</button>
+                    <button class="new-game-btn" id="newGame">New Game</button>
+                </div>
+            </div>
+
+            <div class="game-board" id="gameBoard">
+                <div class="game-over" id="gameOver">
+                    <div class="game-over-text">Game Over!</div>
+                    <button class="game-over-btn" id="tryAgain">Try Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const difficulties = {
+            beginner: { rows: 9, cols: 9, mines: 10 },
+            intermediate: { rows: 16, cols: 16, mines: 40 },
+            expert: { rows: 16, cols: 30, mines: 99 }
+        };
+
+        let board = [];
+        let gameOver = false;
+        let firstClick = true;
+        let timer = 0;
+        let timerInterval;
+        let currentDifficulty = 'beginner';
+        let remainingMines = 0;
+        let revealedCells = 0;
+
+        const gameBoard = document.getElementById('gameBoard');
+        const minesCountDisplay = document.getElementById('minesCount');
+        const timerDisplay = document.getElementById('timer');
+        const newGameBtn = document.getElementById('newGame');
+        const tryAgainBtn = document.getElementById('tryAgain');
+        const gameOverScreen = document.getElementById('gameOver');
+        const difficultyBtns = document.querySelectorAll('.difficulty-btn');
+        const aiBtn = document.getElementById('aiBtn');
+        let aiInterval;
+
+        function initBoard() {
+            const { rows, cols, mines } = difficulties[currentDifficulty];
+            board = Array(rows).fill().map(() => Array(cols).fill(0));
+            gameOver = false;
+            firstClick = true;
+            timer = 0;
+            remainingMines = mines;
+            revealedCells = 0;
+            
+            clearInterval(timerInterval);
+            stopAI();
+            timerDisplay.textContent = '0';
+            minesCountDisplay.textContent = mines;
+            
+            gameBoard.style.gridTemplateColumns = `repeat(${cols}, var(--cell-size))`;
+            gameBoard.innerHTML = '';
+            gameOverScreen.className = 'game-over';
+
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+                    cell.addEventListener('click', () => handleClick(row, col));
+                    cell.addEventListener('contextmenu', (e) => {
+                        e.preventDefault();
+                        handleRightClick(row, col);
+                    });
+                    gameBoard.appendChild(cell);
+                }
+            }
+        }
+
+        function placeMines(firstRow, firstCol) {
+            const { rows, cols, mines } = difficulties[currentDifficulty];
+            let minesPlaced = 0;
+
+            while (minesPlaced < mines) {
+                const row = Math.floor(Math.random() * rows);
+                const col = Math.floor(Math.random() * cols);
+                
+                if (board[row][col] !== -1 && 
+                    Math.abs(row - firstRow) > 1 || Math.abs(col - firstCol) > 1) {
+                    board[row][col] = -1;
+                    minesPlaced++;
+                }
+            }
+
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    if (board[row][col] !== -1) {
+                        let count = 0;
+                        for (let r = -1; r <= 1; r++) {
+                            for (let c = -1; c <= 1; c++) {
+                                const newRow = row + r;
+                                const newCol = col + c;
+                                if (newRow >= 0 && newRow < rows && 
+                                    newCol >= 0 && newCol < cols && 
+                                    board[newRow][newCol] === -1) {
+                                    count++;
+                                }
+                            }
+                        }
+                        board[row][col] = count;
+                    }
+                }
+            }
+        }
+
+        function handleClick(row, col) {
+            if (gameOver) return;
+
+            if (firstClick) {
+                firstClick = false;
+                placeMines(row, col);
+                startTimer();
+            }
+
+            const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+            if (cell.classList.contains('revealed') || cell.classList.contains('flagged')) return;
+
+            if (board[row][col] === -1) {
+                gameOver = true;
+                revealAll();
+                cell.classList.add('mine');
+                gameOverScreen.classList.add('show');
+                clearInterval(timerInterval);
+                return;
+            }
+
+            revealCell(row, col);
+            checkWin();
+        }
+
+        function handleRightClick(row, col) {
+            if (gameOver) return;
+
+            const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+            if (cell.classList.contains('revealed')) return;
+
+            if (cell.classList.contains('flagged')) {
+                cell.classList.remove('flagged');
+                remainingMines++;
+            } else if (remainingMines > 0) {
+                cell.classList.add('flagged');
+                remainingMines--;
+            }
+
+            minesCountDisplay.textContent = remainingMines;
+        }
+
+        function revealCell(row, col) {
+            const { rows, cols } = difficulties[currentDifficulty];
+            const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+            
+            if (cell.classList.contains('revealed')) return;
+            
+            cell.classList.add('revealed');
+            revealedCells++;
+
+            if (board[row][col] === 0) {
+                for (let r = -1; r <= 1; r++) {
+                    for (let c = -1; c <= 1; c++) {
+                        const newRow = row + r;
+                        const newCol = col + c;
+                        if (newRow >= 0 && newRow < rows && 
+                            newCol >= 0 && newCol < cols) {
+                            revealCell(newRow, newCol);
+                        }
+                    }
+                }
+            } else {
+                cell.textContent = board[row][col];
+                cell.dataset.number = board[row][col];
+            }
+        }
+
+        function revealAll() {
+            const { rows, cols } = difficulties[currentDifficulty];
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+                    if (board[row][col] === -1) {
+                        cell.classList.add('revealed', 'mine');
+                    }
+                }
+            }
+        }
+
+        function checkWin() {
+            const { rows, cols, mines } = difficulties[currentDifficulty];
+            const totalCells = rows * cols;
+            if (revealedCells === totalCells - mines) {
+                gameOver = true;
+                clearInterval(timerInterval);
+                gameOverScreen.querySelector('.game-over-text').textContent = 'You Win!';
+                gameOverScreen.classList.add('show');
+            }
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timer++;
+                timerDisplay.textContent = timer;
+            }, 1000);
+        }
+
+        function setDifficulty(difficulty) {
+            currentDifficulty = difficulty;
+            difficultyBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.difficulty === difficulty);
+            });
+            
+            const gameContainer = document.querySelector('.game-container');
+            const containerWidth = gameContainer.offsetWidth - 40; 
+            
+            if (difficulty === 'beginner') {
+                gameContainer.style.maxWidth = '500px';
+                document.documentElement.style.setProperty('--cell-size', '40px');
+            } else if (difficulty === 'intermediate') {
+                gameContainer.style.maxWidth = '700px';
+                const cellSize = Math.floor((containerWidth - 32) / 16); 
+                document.documentElement.style.setProperty('--cell-size', `${cellSize}px`);
+            } else if (difficulty === 'expert') {
+                gameContainer.style.maxWidth = '1200px';
+                const cellSize = Math.floor((containerWidth - 62) / 30); 
+                document.documentElement.style.setProperty('--cell-size', `${cellSize}px`);
+            }
+            
+            initBoard();
+        }
+
+        newGameBtn.addEventListener('click', () => {
+            stopAI();
+            initBoard();
+        });
+        tryAgainBtn.addEventListener('click', () => {
+            stopAI();
+            initBoard();
+        });
+        difficultyBtns.forEach(btn => {
+            btn.addEventListener('click', () => setDifficulty(btn.dataset.difficulty));
+        });
+
+        const background = document.querySelector('.background-animation');
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) * 100;
+            const y = (e.clientY / window.innerHeight) * 100;
+            background.style.setProperty('--mouse-x', `${x}%`);
+            background.style.setProperty('--mouse-y', `${y}%`);
+        });
+
+        window.addEventListener('resize', () => {
+            setDifficulty(currentDifficulty);
+        });
+
+        function analyzeBoard() {
+            const { rows, cols } = difficulties[currentDifficulty];
+            let safeMoves = [];
+            let mineMoves = [];
+            let revealedCells = [];
+
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+                    if (cell.classList.contains('revealed')) {
+                        revealedCells.push([row, col]);
+                    }
+                }
+            }
+
+            if (revealedCells.length === 0) {
+                return { safeMoves: [[Math.floor(rows/2), Math.floor(cols/2)]], mineMoves: [] };
+            }
+
+            const lastRevealed = revealedCells[revealedCells.length - 1];
+            const directions = [
+                [-1, -1], [-1, 0], [-1, 1],
+                [0, -1],           [0, 1],
+                [1, -1],  [1, 0],  [1, 1]
+            ];
+
+            for (let [r, c] of revealedCells) {
+                for (let [dr, dc] of directions) {
+                    const newRow = r + dr;
+                    const newCol = c + dc;
+                    if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
+                        const cell = document.querySelector(`.cell[data-row="${newRow}"][data-col="${newCol}"]`);
+                        if (!cell.classList.contains('revealed') && !cell.classList.contains('flagged')) {
+                            if (board[newRow][newCol] === -1) {
+                                mineMoves.push([newRow, newCol]);
+                            } else {
+                                safeMoves.push([newRow, newCol]);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return { safeMoves, mineMoves };
+        }
+
+        function makeAIMove() {
+            if (gameOver) {
+                stopAI();
+                return;
+            }
+
+            const { safeMoves, mineMoves } = analyzeBoard();
+
+            if (safeMoves.length > 0) {
+                const [row, col] = safeMoves[Math.floor(Math.random() * safeMoves.length)];
+                handleClick(row, col);
+            } else if (mineMoves.length > 0) {
+                const [row, col] = mineMoves[Math.floor(Math.random() * mineMoves.length)];
+                handleRightClick(row, col);
+            }
+        }
+
+        function startAI() {
+            aiBtn.textContent = 'Stop AI';
+            aiBtn.classList.add('active');
+            aiInterval = setInterval(makeAIMove, 100);
+        }
+
+        function stopAI() {
+            aiBtn.textContent = 'AI Solve';
+            aiBtn.classList.remove('active');
+            clearInterval(aiInterval);
+            aiInterval = null;
+        }
+
+        aiBtn.addEventListener('click', () => {
+            if (aiInterval) {
+                stopAI();
+            } else {
+                startAI();
+            }
+        });
+
+        initBoard();
+    </script>
+</body>
+</html> 
