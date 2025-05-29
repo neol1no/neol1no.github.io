@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statische Investitionsrechenverfahren - neol1no</title>
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ffffff;
+            --secondary-color: #a0a0a0;
+            --accent-color: #7c4dff;
+            --background-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: rgba(255, 255, 255, 0.03);
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        .gradient-sphere {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, var(--accent-color) 0%, transparent 70%);
+            filter: blur(60px);
+            animation: float 20s infinite ease-in-out;
+            opacity: 0.15;
+        }
+
+        .gradient-sphere:nth-child(1) {
+            top: -200px;
+            left: -200px;
+            animation-delay: 0s;
+        }
+
+        .gradient-sphere:nth-child(2) {
+            bottom: -200px;
+            right: -200px;
+            animation-delay: -10s;
+            background: radial-gradient(circle at center, #9d4edd 0%, transparent 70%);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, 50px) scale(1.1); }
+            50% { transform: translate(0, 100px) scale(1); }
+            75% { transform: translate(-50px, 50px) scale(0.9); }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            padding: 4rem 0;
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            letter-spacing: -1px;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 2rem;
+        }
+
+        .methods-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .method-item {
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out forwards;
+            text-decoration: none;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .method-item:hover {
+            transform: translateX(10px);
+            border-color: var(--accent-color);
+        }
+
+        .method-icon {
+            font-size: 3rem;
+            color: var(--accent-color);
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(124, 77, 255, 0.1);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .method-content {
+            flex-grow: 1;
+        }
+
+        .method-item h2 {
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .method-item p {
+            color: var(--secondary-color);
+            margin-bottom: 0;
+            font-size: 1.1rem;
+        }
+
+        .method-arrow {
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .method-item:hover .method-arrow {
+            opacity: 1;
+            transform: translateX(5px);
+        }
+
+        .back-button {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            background: var(--background-color);
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            background: var(--card-bg);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .methods-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation">
+        <div class="gradient-sphere"></div>
+        <div class="gradient-sphere"></div>
+    </div>
+    <a href="../../projects/school.html" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Back to School Tasks
+    </a>
+    <div class="container">
+        <header>
+            <h1>Statische Investitionsrechenverfahren</h1>
+            <p class="subtitle">Eine grafische Darstellung der wichtigsten statischen Investitionsrechenverfahren</p>
+        </header>
+
+        <div class="methods-grid">
+            <a href="kostenvergleichsrechnung.html" class="method-item" style="animation-delay: 0.2s">
+                <div class="method-icon">
+                    <i class="fas fa-balance-scale"></i>
+                </div>
+                <div class="method-content">
+                    <h2>Kostenvergleichsrechnung</h2>
+                    <p>Vergleich der Gesamtkosten verschiedener Investitionsalternativen über einen bestimmten Zeitraum.</p>
+                </div>
+                <div class="method-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </a>
+
+            <a href="gewinnvergleichsrechnung.html" class="method-item" style="animation-delay: 0.3s">
+                <div class="method-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="method-content">
+                    <h2>Gewinnvergleichsrechnung</h2>
+                    <p>Vergleich der Gewinne verschiedener Investitionsalternativen unter Berücksichtigung von Kosten und Erlösen.</p>
+                </div>
+                <div class="method-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </a>
+
+            <a href="rentabilitaetsvergleichsrechnung.html" class="method-item" style="animation-delay: 0.4s">
+                <div class="method-icon">
+                    <i class="fas fa-percentage"></i>
+                </div>
+                <div class="method-content">
+                    <h2>Rentabilitätsvergleichsrechnung</h2>
+                    <p>Berechnung und Vergleich der Rentabilität verschiedener Investitionsalternativen in Bezug auf das eingesetzte Kapital.</p>
+                </div>
+                <div class="method-arrow">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
+</html> 

@@ -107,8 +107,8 @@
         }
 
         .tasks-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            display: flex;
+            flex-direction: column;
             gap: 2rem;
             margin-top: 2rem;
         }
@@ -120,10 +120,13 @@
             opacity: 0;
             animation: fadeIn 0.8s ease-out forwards;
             animation-delay: 0.1s;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
         }
 
         .search-bar {
-            width: 100%;
+            flex: 1;
             padding: 1rem 1.5rem;
             font-size: 1.1rem;
             background: var(--card-bg);
@@ -131,6 +134,41 @@
             border-radius: 12px;
             color: var(--text-color);
             transition: all 0.3s ease;
+        }
+
+        .category-filter {
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            min-width: 150px;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237c4dff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+            padding-right: 2.5rem;
+        }
+
+        .category-filter:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-1px);
+        }
+
+        .category-filter:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.1);
+        }
+
+        .category-filter option {
+            background: var(--background-color);
+            color: var(--text-color);
+            padding: 1rem;
         }
 
         .search-bar:focus {
@@ -153,6 +191,7 @@
         }
 
         .task-item {
+            width: 100%;
             background: var(--card-bg);
             border-radius: 16px;
             padding: 2rem;
@@ -261,6 +300,11 @@
         <div class="search-container">
             <input type="text" class="search-bar" placeholder="Search tasks..." id="searchInput">
             <i class="fas fa-search search-icon"></i>
+            <select class="category-filter" id="categoryFilter">
+                <option value="">All Categories</option>
+                <option value="English">English</option>
+                <option value="VWL/BWL">VWL/BWL</option>
+            </select>
         </div>
 
         <div class="tasks-grid">
@@ -271,31 +315,45 @@
                 <div class="date">Added: May 22, 2025</div>
             </a>
 
-            <!-- More tasks can be added here as they come -->
+            <a href="../school/investment-calculations" class="task-item" style="animation-delay: 0.3s">
+                <span class="subject">VWL/BWL</span>
+                <h2><i class="fas fa-calculator"></i> Static Investment Calculation Methods</h2>
+                <p>A graphical representation of the main static investment calculation methods: Cost Comparison Method, Profit Comparison Method, and Return on Investment Comparison Method.</p>
+                <div class="date">Added: May 24, 2025</div>
+            </a>
         </div>
     </div>
 
     <script>
         const searchInput = document.getElementById('searchInput');
+        const categoryFilter = document.getElementById('categoryFilter');
         const taskItems = document.querySelectorAll('.task-item');
 
-        searchInput.addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
+        function filterTasks() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const selectedCategory = categoryFilter.value;
             
             taskItems.forEach(item => {
                 const title = item.querySelector('h2').textContent.toLowerCase();
                 const description = item.querySelector('p').textContent.toLowerCase();
-                const subject = item.querySelector('.subject').textContent.toLowerCase();
+                const subject = item.querySelector('.subject').textContent;
                 
-                if (title.includes(searchTerm) || 
+                const matchesSearch = title.includes(searchTerm) || 
                     description.includes(searchTerm) || 
-                    subject.includes(searchTerm)) {
+                    subject.toLowerCase().includes(searchTerm);
+                
+                const matchesCategory = !selectedCategory || subject === selectedCategory;
+                
+                if (matchesSearch && matchesCategory) {
                     item.style.display = '';
                 } else {
                     item.style.display = 'none';
                 }
             });
-        });
+        }
+
+        searchInput.addEventListener('input', filterTasks);
+        categoryFilter.addEventListener('change', filterTasks);
     </script>
 </body>
 </html> 
