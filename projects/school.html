@@ -123,6 +123,7 @@
             display: flex;
             gap: 1rem;
             align-items: center;
+            z-index: 1002;
         }
 
         .search-bar {
@@ -136,39 +137,89 @@
             transition: all 0.3s ease;
         }
 
-        .category-filter {
+        .custom-select {
+            position: relative;
+            min-width: 150px;
+            z-index: 1002;
+        }
+
+        .select-selected {
             padding: 1rem 1.5rem;
             font-size: 1.1rem;
             background: var(--card-bg);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 12px;
             color: var(--text-color);
-            transition: all 0.3s ease;
             cursor: pointer;
-            min-width: 150px;
-            appearance: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .select-selected::after {
+            content: '';
+            width: 12px;
+            height: 12px;
             background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237c4dff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
             background-repeat: no-repeat;
-            background-position: right 1rem center;
-            background-size: 1em;
-            padding-right: 2.5rem;
+            background-position: center;
+            transition: transform 0.3s ease;
         }
 
-        .category-filter:hover {
+        .select-selected.active::after {
+            transform: rotate(180deg);
+        }
+
+        .select-selected:hover {
             border-color: var(--accent-color);
             transform: translateY(-1px);
+            box-shadow: 0 6px 12px rgba(124, 77, 255, 0.15);
+            background-color: rgba(124, 77, 255, 0.05);
         }
 
-        .category-filter:focus {
-            outline: none;
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.1);
-        }
-
-        .category-filter option {
+        .select-items {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            right: 0;
             background: var(--background-color);
+            border: 1px solid rgba(124, 77, 255, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            z-index: 1002;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .select-items.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .select-item {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
             color: var(--text-color);
-            padding: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .select-item:hover {
+            background: rgba(124, 77, 255, 0.1);
+            color: var(--accent-color);
+        }
+
+        .select-item.selected {
+            background: rgba(124, 77, 255, 0.15);
+            color: var(--accent-color);
         }
 
         .search-bar:focus {
@@ -202,6 +253,8 @@
             animation: fadeIn 0.8s ease-out forwards;
             text-decoration: none;
             color: var(--text-color);
+            position: relative;
+            z-index: 1;
         }
 
         .task-item:hover {
@@ -299,12 +352,14 @@
 
         <div class="search-container">
             <input type="text" class="search-bar" placeholder="Search tasks..." id="searchInput">
-            <i class="fas fa-search search-icon"></i>
-            <select class="category-filter" id="categoryFilter">
-                <option value="">All Categories</option>
-                <option value="English">English</option>
-                <option value="VWL/BWL">VWL/BWL</option>
-            </select>
+            <div class="custom-select">
+                <div class="select-selected" id="selectSelected">All Categories</div>
+                <div class="select-items" id="selectItems">
+                    <div class="select-item" data-value="">All Categories</div>
+                    <div class="select-item" data-value="English">English</div>
+                    <div class="select-item" data-value="VWL/BWL">VWL/BWL</div>
+                </div>
+            </div>
         </div>
 
         <div class="tasks-grid">
@@ -326,12 +381,40 @@
 
     <script>
         const searchInput = document.getElementById('searchInput');
-        const categoryFilter = document.getElementById('categoryFilter');
         const taskItems = document.querySelectorAll('.task-item');
+        const selectSelected = document.getElementById('selectSelected');
+        const selectItems = document.getElementById('selectItems');
+        const selectItemsList = selectItems.querySelectorAll('.select-item');
+
+        selectSelected.addEventListener('click', function(e) {
+            e.stopPropagation();
+            selectItems.classList.toggle('show');
+            selectSelected.classList.toggle('active');
+        });
+
+        selectItemsList.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const value = this.getAttribute('data-value');
+                selectSelected.textContent = this.textContent;
+                selectItemsList.forEach(i => i.classList.remove('selected'));
+                this.classList.add('selected');
+                selectItems.classList.remove('show');
+                selectSelected.classList.remove('active');
+                filterTasks();
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.custom-select')) {
+                selectItems.classList.remove('show');
+                selectSelected.classList.remove('active');
+            }
+        });
 
         function filterTasks() {
             const searchTerm = searchInput.value.toLowerCase();
-            const selectedCategory = categoryFilter.value;
+            const selectedCategory = selectSelected.textContent;
             
             taskItems.forEach(item => {
                 const title = item.querySelector('h2').textContent.toLowerCase();
@@ -342,7 +425,7 @@
                     description.includes(searchTerm) || 
                     subject.toLowerCase().includes(searchTerm);
                 
-                const matchesCategory = !selectedCategory || subject === selectedCategory;
+                const matchesCategory = selectedCategory === 'All Categories' || subject === selectedCategory;
                 
                 if (matchesSearch && matchesCategory) {
                     item.style.display = '';
@@ -353,7 +436,6 @@
         }
 
         searchInput.addEventListener('input', filterTasks);
-        categoryFilter.addEventListener('change', filterTasks);
     </script>
 </body>
 </html> 

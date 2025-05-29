@@ -584,10 +584,8 @@
         }
 
         function downloadChart() {
-            // Get the chart's base64 image
             const chartImage = profitabilityChart.toBase64Image();
             
-            // Create a temporary container
             const tempContainer = document.createElement('div');
             tempContainer.style.background = '#1a1a1a';
             tempContainer.style.padding = '2rem';
@@ -596,7 +594,6 @@
             tempContainer.style.left = '-9999px';
             tempContainer.style.top = '-9999px';
 
-            // Create the content
             tempContainer.innerHTML = `
                 <div style="color: #7c4dff; font-size: 1.5rem; margin-bottom: 1rem; text-align: center;">Rentabilitätsvergleich</div>
                 <img src="${chartImage}" style="width: 100%; margin-bottom: 1rem;">
@@ -612,7 +609,6 @@
 
             document.body.appendChild(tempContainer);
 
-            // Use html2canvas to capture the content
             html2canvas(tempContainer, {
                 backgroundColor: '#1a1a1a',
                 scale: 2,
@@ -620,18 +616,15 @@
                 useCORS: true,
                 allowTaint: true
             }).then(canvas => {
-                // Create download link
                 const link = document.createElement('a');
                 link.download = 'rentabilitaetsvergleich.png';
                 link.href = canvas.toDataURL('image/png');
                 link.click();
 
-                // Clean up
                 document.body.removeChild(tempContainer);
             });
         }
 
-        // Initialize chart on page load
         document.addEventListener('DOMContentLoaded', updateChart);
     </script>
 </body>

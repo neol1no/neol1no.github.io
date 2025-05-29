@@ -876,7 +876,6 @@
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    // Update section indicator
                     const sectionId = entry.target.id.replace('-section', '');
                     document.querySelectorAll('.section-dot').forEach(dot => {
                         dot.classList.remove('active');
@@ -888,12 +887,10 @@
             });
         }, observerOptions);
 
-        // Observe all sections
         document.querySelectorAll('section[id$="-section"]').forEach(section => {
             observer.observe(section);
         });
 
-        // Add click handlers for section dots
         document.querySelectorAll('.section-dot').forEach(dot => {
             dot.addEventListener('click', () => {
                 const sectionId = dot.dataset.section;
