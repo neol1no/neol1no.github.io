@@ -538,6 +538,10 @@
                 flex-direction: column;
                 gap: 1rem;
             }
+
+            .legal-links {
+                display: none;
+            }
         }
 
         @media (max-width: 480px) {
@@ -640,6 +644,28 @@
         #gallery {
             scroll-snap-align: start;
         }
+
+        .legal-links {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .legal-link {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            opacity: 0.7;
+        }
+
+        .legal-link:hover {
+            color: var(--primary-color);
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -659,6 +685,11 @@
             <a href="#catering" class="nav-link">Catering</a>
             <a href="#location" class="nav-link">Location</a>
             <a href="#gallery" class="nav-link">Galerie</a>
+            <div class="legal-links">
+                <a href="agb.html" class="legal-link">AGB</a>
+                <a href="impressum.html" class="legal-link">Impressum</a>
+                <a href="datenschutz.html" class="legal-link">Datenschutz</a>
+            </div>
         </div>
     </nav>
 
