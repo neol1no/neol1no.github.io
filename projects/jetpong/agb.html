@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGB - Jetpong</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ffffff;
+            --secondary-color: #a0a0a0;
+            --accent-color: #e63946;
+            --background-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header img {
+            max-width: 200px;
+            margin-bottom: 1rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .content {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 10px;
+        }
+
+        .agb-image {
+            width: 100%;
+            height: auto;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+        }
+
+        .back-button {
+            display: inline-block;
+            color: var(--accent-color);
+            text-decoration: none;
+            margin-bottom: 2rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-button:hover {
+            color: var(--primary-color);
+        }
+
+        .back-button i {
+            margin-right: 0.5rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            color: var(--secondary-color);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-color);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            Zurück zur Startseite
+        </a>
+
+        <div class="header">
+            <img src="assets/name_only.png" alt="Jetpong">
+            <h1>Allgemeine Geschäftsbedingungen</h1>
+        </div>
+
+        <div class="content">
+            <img src="assets/TEXTS/AGB_1.png" alt="AGB Teil 1" class="agb-image">
+            <img src="assets/TEXTS/AGB_2.png" alt="AGB Teil 2" class="agb-image">
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="agb.html">AGB</a>
+            <a href="impressum.html">Impressum</a>
+            <a href="datenschutz.html">Datenschutz</a>
+        </div>
+        <p>© 2025 Jetpong. Alle Rechte vorbehalten.</p>
+    </footer>
+</body>
+</html> 

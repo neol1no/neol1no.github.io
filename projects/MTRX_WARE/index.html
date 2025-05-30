@@ -1,7 +1,447 @@
-.feature-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    margin-left: 4rem;
-    margin-top: 0.5rem;
-} 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTRX_WARE - CS2 ESP Base - neol1no</title>
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ffffff;
+            --secondary-color: #a0a0a0;
+            --accent-color: #7c4dff;
+            --background-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: rgba(124, 77, 255, 0.03);
+            --card-hover: rgba(124, 77, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            overflow-x: hidden;
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(124, 77, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(157, 78, 221, 0.1) 0%, transparent 50%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            padding: 4rem 0;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            letter-spacing: -1px;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::before {
+            content: '<';
+            color: var(--accent-color);
+            margin-right: 0.5rem;
+        }
+
+        h1::after {
+            content: '/>';
+            color: var(--accent-color);
+            margin-left: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+
+        .github-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--card-bg);
+            color: var(--secondary-color);
+            text-decoration: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            border: 2px solid rgba(124, 77, 255, 0.1);
+        }
+
+        .github-button:hover {
+            transform: translateY(-2px);
+            background: var(--card-hover);
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .github-button i {
+            font-size: 1.3rem;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            background: var(--card-bg);
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 2px solid rgba(124, 77, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            background: var(--card-hover);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 2rem;
+            align-items: start;
+            margin-top: 2rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            padding-top: 3.5rem;
+            margin-left: 4rem;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 2px solid rgba(124, 77, 255, 0.1);
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+            background: var(--card-hover);
+        }
+
+        .feature-card h3 {
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feature-card ul {
+            list-style: none;
+            color: var(--secondary-color);
+        }
+
+        .feature-card li {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feature-card li i {
+            color: var(--accent-color);
+        }
+
+        .screenshots {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .screenshot {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 2px solid rgba(124, 77, 255, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .screenshot:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+            background: var(--card-hover);
+        }
+
+        .screenshot img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .preview-section {
+            position: sticky;
+            top: 2rem;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .preview-image {
+            width: 100%;
+            border-radius: 12px;
+            border: 2px solid rgba(124, 77, 255, 0.2);
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out forwards;
+            animation-delay: 0.3s;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+
+        .preview-image:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .preview-label {
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            grid-column: 1 / -1;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90vh;
+            position: relative;
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0.5rem;
+        }
+
+        @media (max-width: 1200px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .preview-section {
+                position: relative;
+                top: 0;
+                order: -1;
+            }
+
+            .preview-image {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .feature-grid {
+                margin-left: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation"></div>
+    <a href="../../projects.html" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Back to Projects
+    </a>
+    <div class="container">
+        <header>
+            <h1>MTRX_WARE</h1>
+            <p class="subtitle">CS2 ESP Base</p>
+            <a href="https://github.com/neol1no/MTRX_WARE" class="github-button" target="_blank">
+                <i class="fab fa-github"></i>
+                View on GitHub
+            </a>
+        </header>
+
+        <div class="content-wrapper">
+            <div class="feature-grid">
+                <div class="feature-card" style="animation-delay: 0.2s">
+                    <h3><i class="fas fa-eye"></i> ESP Features</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Enable ESP</li>
+                        <li><i class="fas fa-check"></i> Box ESP</li>
+                        <li><i class="fas fa-check"></i> Skeleton ESP</li>
+                        <li><i class="fas fa-check"></i> Line ESP</li>
+                        <li><i class="fas fa-check"></i> Name ESP</li>
+                        <li><i class="fas fa-check"></i> Distance ESP</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card" style="animation-delay: 0.3s">
+                    <h3><i class="fas fa-palette"></i> Color Settings</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Team Color Picker</li>
+                        <li><i class="fas fa-check"></i> Enemy Color Picker</li>
+                        <li><i class="fas fa-check"></i> Bone Color Picker</li>
+                        <li><i class="fas fa-check"></i> Distance Color Picker</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="preview-section">
+                <div class="preview-label">Menu:</div>
+                <img src="assets/mtrx_ware_menu.png" alt="MTRX_WARE Menu Preview" class="preview-image" id="menuPreview">
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="imageModal">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <img src="" alt="Expanded screenshot">
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('menuPreview').onerror = function() {
+            this.style.display = 'none';
+        };
+
+        const modal = document.getElementById('imageModal');
+        const modalImg = modal.querySelector('img');
+        const closeBtn = modal.querySelector('.close-modal');
+        const previewImage = document.getElementById('menuPreview');
+
+        previewImage.addEventListener('click', () => {
+            modal.classList.add('active');
+            modalImg.src = previewImage.src;
+            document.body.style.overflow = 'hidden';
+        });
+
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        closeBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
+    </script>
+</body>
+</html> 
