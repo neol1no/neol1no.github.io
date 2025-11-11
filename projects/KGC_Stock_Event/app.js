@@ -122,8 +122,7 @@ function updateStats() {
 
     const stats = [
         { label: 'Total Rounds', value: stockData.length },
-        { label: 'Stocks Tracked', value: STOCKS.length },
-        { label: 'Current Round Range', value: `${roundStart} - ${roundEnd}` }
+        { label: 'Stocks Tracked', value: STOCKS.length }
     ];
 
     stats.forEach(stat => {
