@@ -322,23 +322,175 @@
 
         @media (max-width: 768px) {
             .container {
-                padding: 1rem;
+                padding: 0.75rem;
+            }
+
+            header {
+                padding: 2rem 0 1.5rem;
             }
 
             h1 {
-                font-size: 2rem;
+                font-size: 1.75rem;
+                margin-bottom: 0.25rem;
             }
 
-            .chart-wrapper {
-                height: 300px;
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .credits {
+                padding: 0.75rem 1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .credits-text {
+                font-size: 0.85rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .controls {
+                padding: 1rem;
+                margin-bottom: 1.5rem;
             }
 
             .controls-row {
                 flex-direction: column;
+                gap: 0.75rem;
             }
 
             .control-group {
                 min-width: 100%;
+            }
+
+            .control-group label {
+                font-size: 0.85rem;
+            }
+
+            .control-group select,
+            .control-group input {
+                padding: 0.625rem;
+                font-size: 0.9rem;
+            }
+
+            .stock-checkboxes {
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+
+            .checkbox-group {
+                font-size: 0.9rem;
+            }
+
+            .chart-container {
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .chart-header {
+                margin-bottom: 1rem;
+            }
+
+            .chart-title {
+                font-size: 1.25rem;
+            }
+
+            .chart-wrapper {
+                height: 350px;
+                min-height: 350px;
+            }
+
+            .data-table {
+                padding: 1rem;
+            }
+
+            .data-table h2 {
+                font-size: 1.25rem;
+                margin-bottom: 1rem;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            th, td {
+                padding: 0.5rem 0.375rem;
+                white-space: nowrap;
+            }
+
+            th {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0.5rem;
+            }
+
+            header {
+                padding: 1.5rem 0 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .subtitle {
+                font-size: 0.9rem;
+            }
+
+            .chart-wrapper {
+                height: 300px;
+                min-height: 300px;
+            }
+
+            .chart-title {
+                font-size: 1.1rem;
+            }
+
+            .stats-grid {
+                gap: 0.5rem;
+            }
+
+            .stat-card {
+                padding: 0.75rem;
+            }
+
+            .stat-value {
+                font-size: 1.25rem;
+            }
+
+            .controls {
+                padding: 0.75rem;
+            }
+
+            .chart-container {
+                padding: 0.75rem;
+            }
+
+            .data-table {
+                padding: 0.75rem;
+            }
+
+            table {
+                font-size: 0.75rem;
+            }
+
+            th, td {
+                padding: 0.4rem 0.25rem;
             }
         }
     </style>

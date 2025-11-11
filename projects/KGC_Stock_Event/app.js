@@ -217,22 +217,32 @@ function updateChart() {
             plugins: {
                 legend: {
                     display: true,
-                    position: 'top',
+                    position: window.innerWidth <= 768 ? 'bottom' : 'top',
                     labels: {
                         color: '#ffffff',
                         usePointStyle: true,
-                        padding: 15
+                        padding: window.innerWidth <= 480 ? 8 : 15,
+                        boxWidth: window.innerWidth <= 480 ? 10 : 12,
+                        font: {
+                            size: window.innerWidth <= 480 ? 10 : 12
+                        }
                     }
                 },
                 tooltip: {
                     mode: 'index',
                     intersect: false,
-                    backgroundColor: 'rgba(26, 26, 26, 0.9)',
+                    backgroundColor: 'rgba(26, 26, 26, 0.95)',
                     titleColor: '#ffffff',
                     bodyColor: '#ffffff',
                     borderColor: '#7c4dff',
                     borderWidth: 1,
-                    padding: 12,
+                    padding: window.innerWidth <= 480 ? 8 : 12,
+                    titleFont: {
+                        size: window.innerWidth <= 480 ? 11 : 13
+                    },
+                    bodyFont: {
+                        size: window.innerWidth <= 480 ? 10 : 12
+                    },
                     callbacks: {
                         label: function(context) {
                             let label = context.dataset.label || '';
@@ -256,9 +266,12 @@ function updateChart() {
                 x: {
                     ticks: {
                         color: '#a0a0a0',
-                        maxRotation: 45,
-                        minRotation: 45,
-                        maxTicksLimit: 20
+                        maxRotation: window.innerWidth <= 768 ? 90 : 45,
+                        minRotation: window.innerWidth <= 768 ? 90 : 45,
+                        maxTicksLimit: window.innerWidth <= 480 ? 8 : window.innerWidth <= 768 ? 12 : 20,
+                        font: {
+                            size: window.innerWidth <= 480 ? 10 : 12
+                        }
                     },
                     grid: {
                         color: 'rgba(124, 77, 255, 0.1)'
@@ -267,9 +280,17 @@ function updateChart() {
                 y: {
                     ticks: {
                         color: '#a0a0a0',
+                        maxTicksLimit: window.innerWidth <= 480 ? 6 : 8,
+                        font: {
+                            size: window.innerWidth <= 480 ? 10 : 12
+                        },
                         callback: function(value) {
                             if (chartType === 'percentage') {
                                 return value.toFixed(1) + '%';
+                            }
+                            // Abbreviate large numbers on mobile
+                            if (window.innerWidth <= 480 && Math.abs(value) >= 1000) {
+                                return (value / 1000).toFixed(1) + 'k';
                             }
                             return value.toLocaleString();
                         }
@@ -345,6 +366,17 @@ function updateTable() {
         tableBody.appendChild(row);
     });
 }
+
+// Handle window resize to update chart for mobile
+let resizeTimeout;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+        if (currentChart && stockData.length > 0) {
+            updateChart();
+        }
+    }, 250);
+});
 
 // Initialize on page load
 loadData();
