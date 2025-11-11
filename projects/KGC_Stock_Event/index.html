@@ -94,6 +94,39 @@
             font-weight: 300;
         }
 
+        .credits {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            border: 2px solid rgba(124, 77, 255, 0.1);
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 0.3s forwards;
+        }
+
+        .credits-text {
+            color: var(--secondary-color);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .credits-text strong {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .credits-text a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .credits-text a:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -315,8 +348,15 @@
     <div class="container">
         <header>
             <h1>King God Castle - Stock Event</h1>
-            <p class="subtitle">Stock price data visualization (486 rounds)</p>
+            <p class="subtitle">Stock price data visualization</p>
         </header>
+
+        <div class="credits">
+            <p class="credits-text">
+                <i class="fas fa-database"></i> Data provided by <strong>traktorwagen</strong> on Discord 
+                <span style="color: var(--secondary-color);">(ID: 391730132957528065)</span>
+            </p>
+        </div>
 
         <div id="loading" class="loading">
             <i class="fas fa-spinner fa-spin"></i> Loading data...
