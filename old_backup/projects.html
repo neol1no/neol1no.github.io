@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects - neol1no</title>
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #ffffff;
+            --secondary-color: #a0a0a0;
+            --accent-color: #7c4dff;
+            --background-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: rgba(124, 77, 255, 0.03);
+            --card-hover: rgba(124, 77, 255, 0.1);
+            --grid-size: 50px;
+            --grid-color: rgba(26, 26, 26, 0.95);
+        }
+
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-color: var(--background-color);
+            background-image: 
+                linear-gradient(var(--background-color) calc(var(--grid-size) - 1px), var(--grid-color) 1px),
+                linear-gradient(90deg, var(--background-color) calc(var(--grid-size) - 1px), var(--grid-color) 1px);
+            background-size: var(--grid-size) var(--grid-size);
+            opacity: 1;
+        }
+
+        .background-animation::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                var(--accent-color) 0%,
+                transparent 20%
+            );
+            opacity: 0.5;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            mask-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            mask-size: var(--grid-size) var(--grid-size);
+            -webkit-mask-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            -webkit-mask-size: var(--grid-size) var(--grid-size);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            padding: 4rem 0;
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            letter-spacing: -1px;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::before {
+            content: '<';
+            color: var(--accent-color);
+            margin-right: 0.5rem;
+        }
+
+        h1::after {
+            content: '/>';
+            color: var(--accent-color);
+            margin-left: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            position: relative;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out forwards;
+            animation-delay: 0.1s;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            background: var(--card-bg);
+            border: 2px solid rgba(124, 77, 255, 0.2);
+            border-radius: 8px;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(124, 77, 255, 0.1);
+        }
+
+        .search-bar::placeholder {
+            color: var(--secondary-color);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--accent-color);
+            pointer-events: none;
+        }
+
+        .project-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 2px solid rgba(124, 77, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out forwards;
+            text-decoration: none;
+            color: var(--text-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .project-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+            background: var(--card-hover);
+        }
+
+        .project-item:hover::before {
+            transform: scaleX(1);
+        }
+
+        .project-item h2 {
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .project-item p {
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .project-item .category {
+            display: inline-block;
+            background: rgba(124, 77, 255, 0.1);
+            color: var(--accent-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(124, 77, 255, 0.2);
+        }
+
+        .project-item .date {
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .project-item .date i {
+            color: var(--accent-color);
+        }
+
+        .back-button {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            background: var(--card-bg);
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 2px solid rgba(124, 77, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-button:hover {
+            background: var(--card-hover);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .projects-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1.2rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .tech-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .tech-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: rgba(124, 77, 255, 0.1);
+            color: var(--accent-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(124, 77, 255, 0.2);
+        }
+
+        .tech-tag i {
+            font-size: 1rem;
+        }
+
+        .tags {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .category {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(124, 77, 255, 0.1);
+            color: var(--accent-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(124, 77, 255, 0.2);
+            height: 32px;
+            line-height: 1;
+        }
+
+        .tech-tags {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+
+        .tech-tag {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(124, 77, 255, 0.1);
+            color: var(--accent-color);
+            padding: 0.3rem;
+            border-radius: 20px;
+            border: 1px solid rgba(124, 77, 255, 0.2);
+            width: 32px;
+            height: 32px;
+            line-height: 1;
+        }
+
+        .tech-tag i {
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        .tech-icon {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .category.active-dev {
+            background: rgba(46, 204, 113, 0.1);
+            color: #2ecc71;
+            border-color: rgba(46, 204, 113, 0.2);
+        }
+
+        .category.wip {
+            background: rgba(241, 196, 15, 0.1);
+            color: #f1c40f;
+            border-color: rgba(241, 196, 15, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation"></div>
+    <a href="menu.html" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+        Back to Menu
+    </a>
+    <div class="container">
+        <header>
+            <h1>Projects</h1>
+            <p class="subtitle">A collection of my work and school projects</p>
+        </header>
+
+        <div class="search-container">
+            <input type="text" class="search-bar" placeholder="Search projects..." id="searchInput">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+
+        <div class="projects-grid">
+            <a href="projects/school.html" class="project-item" style="animation-delay: 0.2s">
+                <span class="category">School</span>
+                <h2><i class="fas fa-graduation-cap"></i> School Tasks</h2>
+                <p>Collection of my school assignments and projects</p>
+                <div class="date"><i class="far fa-calendar-alt"></i> Added: May 22, 2025</div>
+            </a>
+            <a href="projects/lunar" class="project-item" style="animation-delay: 0.3s">
+                <div class="tags">
+                    <span class="category">Cheats</span>
+                    <span class="category active-dev">Maintained</span>
+                </div>
+                <h2><i class="fas fa-moon"></i> Lunar</h2>
+                <p>Most advanced GeoGuessr Cheat with Auto-Play</p>
+                <div class="date"><i class="far fa-calendar-alt"></i> Added: May 23, 2025</div>
+            </a>
+            <a href="projects/straftat" class="project-item" style="animation-delay: 0.4s">
+                <span class="category">Cheats</span>
+                <h2><i class="fas fa-gamepad"></i> straftat.cc</h2>
+                <p>Mono Unity Cheat for straftat</p>
+                <div class="date"><i class="far fa-calendar-alt"></i> Added: May 23, 2025</div>
+            </a>
+            <a href="projects/MTRX_WARE" class="project-item" style="animation-delay: 0.5s">
+                <span class="category">Cheats</span>
+                <h2><i class="fas fa-gamepad"></i> MTRX WARE</h2>
+                <p>Counter Strike 2 Cheat Base</p>
+                <div class="date"><i class="far fa-calendar-alt"></i> Added: May 23, 2025</div>
+            </a>
+            <a href="projects/snake-gambling" class="project-item" style="animation-delay: 0.6s">
+                <div class="tags">
+                    <span class="category">Games</span>
+                    
+                </div>
+                <h2><i class="fas fa-gamepad"></i> Snake Gambling</h2>
+                <p>A unique twist on the classic snake game with gambling elements</p>
+                <div class="date"><i class="far fa-calendar-alt"></i> Added: May 23, 2025</div>
+            </a>
+            <a href="projects/jetpong" class="project-item" style="animation-delay: 0.7s">
+                <span class="category">Web</span>
+                <h2><i class="fas fa-utensils"></i> Jetpong</h2>
+                <p>Modern website for an Asian restaurant in Berlin</p>
+                <div class="date"><i class="far fa-calendar-alt"></i> Added: May 29, 2025</div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const projectItems = document.querySelectorAll('.project-item');
+        const background = document.querySelector('.background-animation');
+
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) * 100;
+            const y = (e.clientY / window.innerHeight) * 100;
+            background.style.setProperty('--mouse-x', `${x}%`);
+            background.style.setProperty('--mouse-y', `${y}%`);
+        });
+
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            projectItems.forEach(item => {
+                const title = item.querySelector('h2').textContent.toLowerCase();
+                const description = item.querySelector('p').textContent.toLowerCase();
+                const category = item.querySelector('.category').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || 
+                    description.includes(searchTerm) || 
+                    category.includes(searchTerm)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,33 @@
+STRAFTAT MONO UNITY CHEAT / C#
+
+Aimbot - 360 FOV
+
+    Enabled
+    Auto Fire (Vis Check)
+    Set Hold Bind
+
+Visuals - 3D Box / Name / Health
+
+    Enabled
+
+Exploits
+
+    Rapid Fire
+    Infinite Ammo
+    No Spread
+    InstaKill
+    Freeze Enemy [HOST]
+    Godmode [HOST]
+    Magic Bullet / Bullet TP
+
+Misc
+
+    Weapon Speed
+    Speed Hack
+    Fly
+    Teleport to Enemy (Bind: Z)
+    Unlock Achievments (F5)
+
+Anti Aim
+
+    Always Slide Animation
