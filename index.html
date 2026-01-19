@@ -1,373 +1,513 @@
-<html lang="en" class="scroll-smooth">
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neo — Portfolio</title>
+    <title>Neo Portfolio</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#050505',
+                        card: 'rgba(255, 255, 255, 0.03)',
+                        'card-border': 'rgba(255, 255, 255, 0.05)',
+                        discord: '#5865F2',
+                    },
+                    borderRadius: {
+                        '4xl': '32px',
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Icon -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&amp;display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/Flip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 </head>
 
-<body
-    class="text-neutral-400 antialiased selection:bg-purple-500/30 selection:text-purple-200 relative text-base md:text-lg">
+<body class="bg-dark text-white min-h-screen selection:bg-white selection:text-black font-sans antialiased">
 
-    <!-- Background Gengar GIF -->
-    <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
-        <div class="absolute top-0 right-0 w-full md:w-2/3 h-screen opacity-40 mix-blend-lighten saturate-50 contrast-125"
-            style="background-image: url('https://i.pinimg.com/originals/4f/d0/c0/4fd0c049c173c9beb5a0101a84deb6f9.gif'); background-size: cover; background-position: center;">
-        </div>
-        <div class="absolute inset-0 bg-gradient-to-r from-[#050505] via-[#050505]/90 to-transparent"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent"></div>
-        <div class="absolute inset-0 bg-gradient-to-b from-[#050505] via-transparent to-transparent"></div>
-    </div>
+    <!-- Floating Navigation -->
+    <nav
+        class="fixed top-6 left-1/2 -translate-x-1/2 z-50 glass px-2 py-2 rounded-full flex items-center transition-all duration-300">
+        <div class="relative flex items-center bg-white/5 rounded-full p-1 border border-white/5 overflow-hidden">
+            <!-- Sliding Pill -->
+            <div id="nav-pill"
+                class="absolute top-1 bottom-1 left-1 bg-white rounded-full shadow-lg transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]"
+                style="width: 86px;"></div>
 
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 glass-nav transition-all duration-300">
-        <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
-            <a href="index.html"
-                class="text-white text-sm tracking-tight font-medium hover:opacity-70 transition-opacity focus:outline-none">
-                Neo.
-            </a>
-            <div class="flex gap-8">
-                <a href="#work"
-                    class="text-xs font-medium text-neutral-400 hover:text-white transition-colors focus:outline-none">Work</a>
-                <a href="#about"
-                    class="text-xs font-medium text-neutral-400 hover:text-white transition-colors focus:outline-none">About</a>
-                <a href="#contact"
-                    class="text-xs font-medium text-neutral-400 hover:text-white transition-colors focus:outline-none">Contact</a>
-            </div>
+            <!-- Links -->
+            <a href="#" id="nav-home"
+                class="nav-link relative z-10 px-6 py-2 rounded-full text-sm font-medium text-black transition-colors duration-300"
+                data-target="home">Home</a>
+            <a href="#" id="nav-work"
+                class="nav-link relative z-10 px-6 py-2 rounded-full text-sm font-medium text-white/60 hover:text-white transition-colors duration-300"
+                data-target="work">Work</a>
         </div>
     </nav>
 
-    <!-- MAIN HOME VIEW -->
-    <div id="view-home" class="view-section active" style="display: block; opacity: 1;">
-        <main class="max-w-5xl mx-auto px-6 pt-32 pb-20">
+    <!-- Main Container -->
+    <main id="app" class="pt-32 pb-20 relative w-full max-w-[1400px] mx-auto">
+        <!-- Views will be injected here -->
+        <div id="home-view" class="view-container px-4 md:px-6">
+            <!-- Bento Grid -->
+            <!-- LG: 4 Columns, MD: 3 Columns -->
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[180px]">
 
-            <!-- Hero Section -->
-            <section class="min-h-[75vh] flex flex-col justify-center items-start mb-24 relative">
-
-                <div class="animate-fade-in-up flex items-center gap-4 mb-8">
+                <!-- 1. Profile Card (Spans 2 rows, 1 col) -->
+                <div
+                    class="card glass rounded-4xl p-8 flex flex-col justify-between relative overflow-hidden group row-span-2">
                     <div
-                        class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-900/80 border border-white/10 backdrop-blur-sm">
-                        <span class="relative flex h-2 w-2">
+                        class="absolute inset-0 bg-gradient-to-b from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    </div>
+                    <div>
+                        <div class="w-20 h-20 rounded-full bg-white/10 mb-6 overflow-hidden">
+                            <img src="https://github.com/neol1no.png" alt="Profile" class="w-full h-full object-cover">
+                        </div>
+                        <h1 class="text-3xl font-bold mb-1">Neo</h1>
+                        <p class="text-white/70">Aspiring Developer</p>
+                    </div>
+                    <div
+                        class="inline-flex items-center gap-2 bg-green-500/10 border border-green-500/20 px-3 py-1 rounded-full w-fit">
+                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                        <span class="text-xs font-medium text-green-400">open for collaboration</span>
+                    </div>
+                </div>
+
+                <!-- 2. Hero Project Card (Spans 2 rows, 2 cols) -->
+                <a href="projects/lunar-geoguessr-script.html"
+                    class="card glass rounded-4xl col-span-1 md:col-span-2 row-span-2 relative overflow-hidden group cursor-pointer hover:border-white/20"
+                    id="hero-card">
+                    <div id="hero-bg"
+                        class="absolute inset-0 bg-[url('assets/images/geoguessr_logo_planet.jpg')] bg-cover bg-center transition-transform duration-700 group-hover:scale-105">
+                        <div
+                            class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-300">
+                        </div>
+                    </div>
+                    <div class="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black/90 to-transparent">
+                        <p id="hero-label" class="text-sm text-purple-400 font-medium mb-2">Featured Project</p>
+                        <h2 id="hero-title" class="text-3xl font-bold">Lunar GeoGuessr Script</h2>
+                        <p id="hero-desc" class="text-white/60 mt-2 line-clamp-2">Advanced utility suite for Geoguessr
+                            players
+                            with location specs and automation.</p>
+                    </div>
+                    <div class="absolute top-6 right-6 flex gap-2" id="hero-dots">
+                        <div class="w-2 h-2 rounded-full bg-white transition-all"></div>
+                        <div class="w-2 h-2 rounded-full bg-white/30 transition-all"></div>
+                        <div class="w-2 h-2 rounded-full bg-white/30 transition-all"></div>
+                    </div>
+                </a>
+
+                <!-- 3. Location Card (1x1) -->
+                <div
+                    class="card glass rounded-4xl p-6 flex flex-col justify-center items-center relative overflow-hidden group">
+                    <div
+                        class="absolute inset-0 opacity-30 invert grayscale contrast-125 bg-[url('https://api.mapbox.com/styles/v1/mapbox/dark-v10/static/10.4515,51.1657,5,0/400x400?access_token=YOUR_TOKEN')] bg-cover bg-center">
+                    </div>
+                    <div class="relative z-10 text-center">
+                        <div
+                            class="w-10 h-10 mx-auto bg-white/10 rounded-full flex items-center justify-center mb-3 backdrop-blur-md">
+                            <i data-lucide="map-pin" class="w-5 h-5 text-white"></i>
+                        </div>
+                        <h3 class="font-medium">Germany</h3>
+                        <p class="text-xs text-white/70" id="local-time">00:00 AM</p>
+                    </div>
+                </div>
+
+                <!-- 4. Socials Card (Discord Copy) -->
+                <div class="card glass rounded-4xl p-6 flex flex-col items-center justify-center gap-4 group">
+                    <div class="text-xs text-white/40 mb-1 font-medium tracking-wide">CONNECT</div>
+                    <div class="flex gap-4">
+                        <button id="discord-btn"
+                            class="p-3 rounded-full bg-white/5 hover:bg-[#5865F2] hover:text-white transition-all relative group/btn"
+                            title="Copy: neol1no">
+                            <!-- Tooltip -->
                             <span
-                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                        </span>
-                        <span class="text-xs font-medium text-neutral-300">Student &amp; Developer</span>
-                    </div>
-                    <div
-                        class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neutral-900/80 border border-white/10 backdrop-blur-sm">
-                        <i data-lucide="map-pin" class="w-3 h-3 text-neutral-400"></i>
-                        <span class="text-xs font-medium text-neutral-300">Germany</span>
-                    </div>
-                </div>
-
-                <h1
-                    class="animate-fade-in-up delay-100 text-5xl md:text-7xl lg:text-8xl font-medium tracking-tighter text-white leading-[1.1] mb-8">
-                    Exploring digital <br>
-                    <span class="text-neutral-600">possibilities.</span>
-                </h1>
-
-                <p
-                    class="animate-fade-in-up delay-200 text-lg md:text-xl text-neutral-400 max-w-2xl leading-relaxed font-light mb-10">
-                    Welcome to my digital space. I'm Neo, a student passionate about learning and experimenting with
-                    different technologies to build interesting things.
-                </p>
-
-                <div class="animate-fade-in-up delay-300 flex items-center gap-4">
-                    <a href="#work"
-                        class="group flex items-center gap-2 h-10 px-6 rounded-full bg-white text-black text-sm font-medium hover:bg-neutral-200 transition-all duration-300">
-                        Recent projects
-                        <i data-lucide="arrow-right" class="w-4 h-4 transition-transform group-hover:translate-x-1"></i>
-                    </a>
-                    <a href="https://github.com/neol1no" target="_blank"
-                        class="h-10 w-10 flex items-center justify-center rounded-full border border-neutral-800 text-neutral-400 hover:text-white hover:border-neutral-600 transition-all duration-300 bg-neutral-900/50 backdrop-blur-sm">
-                        <i data-lucide="github" class="w-4 h-4"></i>
-                    </a>
-                </div>
-            </section>
-
-            <!-- Divider -->
-            <div class="w-full h-px bg-gradient-to-r from-transparent via-neutral-800 to-transparent mb-24"></div>
-
-            <!-- Tech Stack -->
-            <section class="mb-32">
-                <h2 class="text-xl font-medium text-white tracking-tight mb-8">Technologies</h2>
-                <div class="flex flex-wrap gap-2 md:gap-3">
-                    <!-- Web Fundamentals -->
-                    <div
-                        class="px-3 py-2 bg-neutral-900/80 border border-white/5 rounded-md text-xs text-neutral-300 flex items-center gap-2 hover:border-neutral-700 transition-colors cursor-default backdrop-blur-sm">
-                        <i class="devicon-html5-plain text-orange-500"></i> HTML5
-                    </div>
-                    <div
-                        class="px-3 py-2 bg-neutral-900/80 border border-white/5 rounded-md text-xs text-neutral-300 flex items-center gap-2 hover:border-neutral-700 transition-colors cursor-default backdrop-blur-sm">
-                        <i class="devicon-css3-plain text-blue-500"></i> CSS3
-                    </div>
-                    <div
-                        class="px-3 py-2 bg-neutral-900/80 border border-white/5 rounded-md text-xs text-neutral-300 flex items-center gap-2 hover:border-neutral-700 transition-colors cursor-default backdrop-blur-sm">
-                        <i class="devicon-tailwindcss-original text-cyan-400"></i> Tailwind
-                    </div>
-                    <div
-                        class="px-3 py-2 bg-neutral-900/80 border border-white/5 rounded-md text-xs text-neutral-300 flex items-center gap-2 hover:border-neutral-700 transition-colors cursor-default backdrop-blur-sm">
-                        <i class="devicon-javascript-plain text-yellow-400"></i> JavaScript
-                    </div>
-                    <div
-                        class="px-3 py-2 bg-neutral-900/80 border border-white/5 rounded-md text-xs text-neutral-300 flex items-center gap-2 hover:border-neutral-700 transition-colors cursor-default backdrop-blur-sm">
-                        <i class="devicon-typescript-plain text-blue-600"></i> TypeScript
-                    </div>
-
-                    <!-- Frameworks & Node -->
-                    <div
-                        class="px-3 py-2 bg-neutral-900/80 border border-white/5 rounded-md text-xs text-neutral-300 flex items-center gap-2 hover:border-neutral-700 transition-colors cursor-default backdrop-blur-sm">
-                        <i class="devicon-react-original text-cyan-400"></i> React
-                    </div>
-                    <div
-                        class="px-3 py-2 bg-neutral-900/80 border border-white/5 rounded-md text-xs text-neutral-300 flex items-center gap-2 hover:border-neutral-700 transition-colors cursor-default backdrop-blur-sm">
-                        <i class="devicon-nextjs-plain text-white"></i> Next.js
-                    </div>
-                    <div
-                        class="px-3 py-2 bg-neutral-900/80 border border-white/5 rounded-md text-xs text-neutral-300 flex items-center gap-2 hover:border-neutral-700 transition-colors cursor-default backdrop-blur-sm">
-                        <i class="devicon-nodejs-plain text-green-500"></i> Node.js
-                    </div>
-
-                    <!-- Languages -->
-                    <div
-                        class="px-3 py-2 bg-neutral-900/80 border border-white/5 rounded-md text-xs text-neutral-300 flex items-center gap-2 hover:border-neutral-700 transition-colors cursor-default backdrop-blur-sm">
-                        <i class="devicon-python-plain text-yellow-300"></i> Python
-                    </div>
-                    <div
-                        class="px-3 py-2 bg-neutral-900/80 border border-white/5 rounded-md text-xs text-neutral-300 flex items-center gap-2 hover:border-neutral-700 transition-colors cursor-default backdrop-blur-sm">
-                        <i class="devicon-java-plain text-red-400"></i> Java
-                    </div>
-                    <div
-                        class="px-3 py-2 bg-neutral-900/80 border border-white/5 rounded-md text-xs text-neutral-300 flex items-center gap-2 hover:border-neutral-700 transition-colors cursor-default backdrop-blur-sm">
-                        <i class="devicon-kotlin-plain text-indigo-400"></i> Kotlin
-                    </div>
-                    <div
-                        class="px-3 py-2 bg-neutral-900/80 border border-white/5 rounded-md text-xs text-neutral-300 flex items-center gap-2 hover:border-neutral-700 transition-colors cursor-default backdrop-blur-sm">
-                        <i class="devicon-csharp-plain text-purple-500"></i> C#
-                    </div>
-                    <div
-                        class="px-3 py-2 bg-neutral-900/80 border border-white/5 rounded-md text-xs text-neutral-300 flex items-center gap-2 hover:border-neutral-700 transition-colors cursor-default backdrop-blur-sm">
-                        <i class="devicon-dotnetcore-plain text-blue-300"></i> .NET
-                    </div>
-                </div>
-            </section>
-
-            <!-- Selected Work -->
-            <section id="work" class="mb-32 scroll-mt-24">
-                <div class="flex items-end justify-between mb-12">
-                    <h2 class="text-2xl font-medium text-white tracking-tight">Recent Projects</h2>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-
-                    <!-- Project 1: Lunar Geoguessr -->
-                    <a href="projects/lunar.html" class="block group cursor-pointer">
-                        <div
-                            class="card-hover border border-white/5 rounded-2xl bg-neutral-900/40 backdrop-blur-sm overflow-hidden transition-all duration-500 h-full flex flex-col">
-                            <!-- Image for Lunar -->
-                            <div
-                                class="aspect-video bg-[#121212] relative overflow-hidden flex items-center justify-center">
-                                <img src="assets/picture/lunar_geo_menu.png" alt="Lunar Geoguessr"
-                                    class="w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105 group-hover:opacity-100">
-                                <div
-                                    class="absolute inset-0 bg-gradient-to-t from-neutral-900/80 to-transparent opacity-60">
-                                </div>
-                            </div>
-
-                            <div class="p-6 flex flex-col flex-1 relative">
-                                <div class="flex justify-between items-start mb-3">
-                                    <div class="flex flex-col gap-1">
-                                        <h3
-                                            class="text-lg font-medium text-white group-hover:text-purple-200 transition-colors">
-                                            Lunar Geoguessr</h3>
-                                        <div class="flex items-center gap-2">
-                                            <span class="flex h-1.5 w-1.5 rounded-full bg-green-500"></span>
-                                            <span
-                                                class="text-[10px] uppercase tracking-wider font-semibold text-green-500">Maintained</span>
-                                        </div>
-                                    </div>
-                                    <i data-lucide="arrow-right-circle"
-                                        class="w-5 h-5 text-neutral-600 group-hover:text-white transition-colors"></i>
-                                </div>
-                                <p class="text-base text-neutral-500 mb-6 line-clamp-2">An advanced JavaScript cheat for
-                                    Geoguessr that intercepts API calls to enable features like Google Maps integration
-                                    and location display.</p>
-                                <div class="mt-auto flex gap-2">
-                                    <div
-                                        class="px-2 py-1 bg-neutral-800 rounded text-[10px] font-medium text-neutral-300 flex items-center gap-1">
-                                        <i class="devicon-javascript-plain text-yellow-400 text-[8px]"></i> JavaScript
-                                    </div>
-                                    <span
-                                        class="px-2 py-1 bg-neutral-800 rounded text-[10px] font-medium text-neutral-300">Tampermonkey</span>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-
-                    <!-- Project 2: Eclipse Client -->
-                    <a href="projects/eclipse.html" class="block group cursor-pointer">
-                        <div
-                            class="card-hover border border-white/5 rounded-2xl bg-neutral-900/40 backdrop-blur-sm overflow-hidden transition-all duration-500 h-full flex flex-col">
-                            <!-- Image for Eclipse -->
-                            <div
-                                class="aspect-video bg-[#0a0a0a] relative overflow-hidden flex items-center justify-center">
-                                <img src="assets/picture/eclipse_menu.png" alt="Eclipse Client"
-                                    class="w-full h-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-105 group-hover:opacity-100">
-                                <div
-                                    class="absolute inset-0 bg-gradient-to-t from-neutral-900/80 to-transparent opacity-60">
-                                </div>
-                            </div>
-
-                            <div class="p-6 flex flex-col flex-1 relative">
-                                <div class="flex justify-between items-start mb-3">
-                                    <h3
-                                        class="text-lg font-medium text-white group-hover:text-red-200 transition-colors">
-                                        Eclipse Client</h3>
-                                    <i data-lucide="arrow-right-circle"
-                                        class="w-5 h-5 text-neutral-600 group-hover:text-white transition-colors"></i>
-                                </div>
-                                <p class="text-base text-neutral-500 mb-6 line-clamp-2">Fabric mod for Hypixel Skyblock
-                                    with various utilities including pathfinding and macros.</p>
-                                <div class="mt-auto flex gap-2">
-                                    <div
-                                        class="px-2 py-1 bg-neutral-800 rounded text-[10px] font-medium text-neutral-300 flex items-center gap-1">
-                                        <i class="devicon-kotlin-plain text-indigo-400 text-[8px]"></i> Kotlin
-                                    </div>
-                                    <div
-                                        class="px-2 py-1 bg-neutral-800 rounded text-[10px] font-medium text-neutral-300 flex items-center gap-1">
-                                        <i class="devicon-java-plain text-red-400 text-[8px]"></i> Java
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-
-                </div>
-
-                <div class="flex flex-col items-center gap-6">
-                    <!-- Text List of Other Notable Work -->
-                    <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <a href="projects/mtrx.html"
-                            class="p-4 border border-white/5 bg-neutral-900/30 rounded-lg flex justify-between items-center hover:bg-neutral-900/50 transition-colors group cursor-pointer">
-                            <div>
-                                <div class="text-sm font-medium text-neutral-200 group-hover:text-white">MTRX WARE</div>
-                                <div class="text-xs text-neutral-500">CS2 External Cheat Base</div>
-                            </div>
-                            <i data-lucide="arrow-right" class="w-3 h-3 text-neutral-600 group-hover:text-white"></i>
+                                class="absolute -top-10 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover/btn:opacity-100 transition-opacity pointer-events-none whitespace-nowrap"
+                                id="discord-tooltip">Copy: neol1no</span>
+                            <svg class="w-6 h-6 fill-current" viewBox="0 0 127.14 96.36">
+                                <path
+                                    d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.09,105.09,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.11,77.11,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22c1.24-23.28-13.26-47.5-18.9-72.15ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z" />
+                            </svg>
+                        </button>
+                        <a href="https://github.com/neol1no" target="_blank"
+                            class="p-3 rounded-full bg-white/5 hover:bg-white hover:text-black transition-colors"
+                            title="GitHub">
+                            <i data-lucide="github" class="w-6 h-6"></i>
                         </a>
-
-                        <a href="projects/riot_api.html"
-                            class="p-4 border border-white/5 bg-neutral-900/30 rounded-lg flex justify-between items-center hover:bg-neutral-900/50 transition-colors group cursor-pointer">
-                            <div>
-                                <div class="text-sm font-medium text-neutral-200 group-hover:text-white">Riot API Lookup
-                                </div>
-                                <div class="text-xs text-neutral-500">League of Legends Stats</div>
-                            </div>
-                            <i data-lucide="arrow-right" class="w-3 h-3 text-neutral-600 group-hover:text-white"></i>
-                        </a>
-
                     </div>
-
-
-                    <a href="projects.html"
-                        class="px-6 py-3 rounded-full border border-white/10 bg-neutral-900 hover:bg-neutral-800 text-sm font-medium text-white transition-colors flex items-center gap-2 focus:outline-none">
-                        View all projects
-                        <i data-lucide="folder-open" class="w-4 h-4"></i>
-                    </a>
                 </div>
-            </section>
 
-            <!-- About / Contact Wrapper -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
+                <!-- 5. Tech Stack (Expanded w/ GRID ICONS+TEXT) -->
+                <!-- Removed Header H3 -->
+                <div
+                    class="card glass rounded-4xl col-span-1 md:col-span-2 lg:col-span-3 p-8 flex flex-col justify-center group hover:bg-white/5 relative overflow-hidden">
+                    <div
+                        class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-4 gap-y-6 relative z-10 w-full no-scrollbar">
 
-                <!-- About -->
-                <section id="about" class="scroll-mt-24">
-                    <h2 class="text-xl font-medium text-white tracking-tight mb-6">About Me</h2>
-                    <div class="space-y-4 text-base leading-7 text-neutral-400">
-                        <p>
-                            I'm currently a student exploring the world of software
-                            development in my free time. While I'm still at the beginning of my journey, I'm passionate
-                            about learning and experimenting with different technologies.
-                        </p>
-                        <p>
-                            Most of my time is spent trying out new things, whether it's coding, gaming, or just
-                            exploring interesting tech. I believe in learning by doing, so you'll often find me working
-                            on random projects or diving into new technologies that catch my interest.
-                        </p>
-                    </div>
-                </section>
-
-                <!-- Contact -->
-                <section id="contact" class="scroll-mt-24">
-                    <h2 class="text-xl font-medium text-white tracking-tight mb-6">Let's Connect</h2>
-                    <p class="text-base text-neutral-400 mb-8 leading-relaxed">
-                        I'm always open to discussing new technologies, collaboration opportunities, or just having a
-                        chat about code and gaming.
-                    </p>
-
-                    <div class="space-y-4">
-                        <!-- Discord Copy Component -->
-                        <div class="group relative flex items-center gap-3 p-4 rounded-xl border border-white/5 bg-neutral-900/50 hover:bg-neutral-900 hover:border-neutral-700 transition-all cursor-pointer backdrop-blur-sm"
-                            onclick="navigator.clipboard.writeText('neol1no')">
-                            <div class="bg-[#5865F2] p-2 rounded-lg text-white">
-                                <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-                                    class="w-5 h-5 fill-current">
-                                    <title>Discord</title>
-                                    <path
-                                        d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.579.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.077.077 0 0 0 .084-.027c.461-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.068 0a.074.074 0 0 1 .078.01c.118.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.086 2.157 2.419 0 1.334-.956 2.42-2.157 2.42zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.086 2.157 2.419 0 1.334-.946 2.42-2.157 2.42z" />
-                                </svg>
-                            </div>
-                            <div class="flex-1">
-                                <div class="text-xs text-neutral-500 font-medium">Discord</div>
-                                <div class="text-sm text-white font-medium">neol1no</div>
-                            </div>
-                            <i data-lucide="copy"
-                                class="w-4 h-4 text-neutral-600 group-hover:text-white transition-colors"></i>
-
-                            <!-- Tooltip (Visual only logic) -->
-                            <div
-                                class="absolute right-10 top-1/2 -translate-y-1/2 opacity-0 group-active:opacity-100 transition-opacity bg-neutral-800 text-xs text-white px-2 py-1 rounded">
-                                Copied!
-                            </div>
+                        <!-- Row 1 -->
+                        <div class="flex items-center gap-3 text-white/80 hover:text-white transition-colors">
+                            <img src="https://cdn.simpleicons.org/html5/white"
+                                class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity" alt="HTML5">
+                            <span class="text-xs font-medium">HTML5</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-white/80 hover:text-white transition-colors">
+                            <!-- Swapped CSS to devicon with invert filter -->
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-plain.svg"
+                                class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity brightness-0 invert"
+                                alt="CSS3">
+                            <span class="text-xs font-medium">CSS3</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-white/80 hover:text-white transition-colors">
+                            <img src="https://cdn.simpleicons.org/tailwindcss/white"
+                                class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity" alt="Tailwind">
+                            <span class="text-xs font-medium">Tailwind</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-white/80 hover:text-white transition-colors">
+                            <img src="https://cdn.simpleicons.org/javascript/white"
+                                class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity" alt="JavaScript">
+                            <span class="text-xs font-medium">JavaScript</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-white/80 hover:text-white transition-colors">
+                            <img src="https://cdn.simpleicons.org/typescript/white"
+                                class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity" alt="TypeScript">
+                            <span class="text-xs font-medium">TypeScript</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-white/80 hover:text-white transition-colors">
+                            <img src="https://cdn.simpleicons.org/react/white"
+                                class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity" alt="React">
+                            <span class="text-xs font-medium">React</span>
                         </div>
 
-                        <div>
-                            <a href="https://github.com/neol1no" target="_blank"
-                                class="flex items-center justify-center gap-2 p-3 rounded-lg border border-white/5 bg-neutral-900/50 hover:border-neutral-700 hover:bg-neutral-900 transition-all text-sm font-medium text-neutral-300 hover:text-white backdrop-blur-sm">
-                                <i data-lucide="github" class="w-4 h-4"></i>
-                                GitHub
+                        <!-- Row 2 -->
+                        <div class="flex items-center gap-3 text-white/80 hover:text-white transition-colors">
+                            <img src="https://cdn.simpleicons.org/nextdotjs/white"
+                                class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity" alt="Next.js">
+                            <span class="text-xs font-medium">Next.js</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-white/80 hover:text-white transition-colors">
+                            <img src="https://cdn.simpleicons.org/nodedotjs/white"
+                                class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity" alt="Node.js">
+                            <span class="text-xs font-medium">Node.js</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-white/80 hover:text-white transition-colors">
+                            <img src="https://cdn.simpleicons.org/vite/white"
+                                class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity" alt="Vite">
+                            <span class="text-xs font-medium">Vite</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-white/80 hover:text-white transition-colors">
+                            <img src="https://cdn.simpleicons.org/python/white"
+                                class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity" alt="Python">
+                            <span class="text-xs font-medium">Python</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-white/80 hover:text-white transition-colors">
+                            <!-- Swapped Java to devicon with invert filter -->
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-plain.svg"
+                                class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity brightness-0 invert"
+                                alt="Java">
+                            <span class="text-xs font-medium">Java</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-white/80 hover:text-white transition-colors">
+                            <img src="https://cdn.simpleicons.org/kotlin/white"
+                                class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity" alt="Kotlin">
+                            <span class="text-xs font-medium">Kotlin</span>
+                        </div>
+
+                        <!-- Row 3 -->
+                        <div class="flex items-center gap-3 text-white/80 hover:text-white transition-colors">
+                            <!-- Swapped C# to devicon with invert filter -->
+                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-plain.svg"
+                                class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity brightness-0 invert"
+                                alt="C#">
+                            <span class="text-xs font-medium">C#</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-white/80 hover:text-white transition-colors">
+                            <img src="https://cdn.simpleicons.org/mongodb/white"
+                                class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity" alt="MongoDB">
+                            <span class="text-xs font-medium">MongoDB</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-white/80 hover:text-white transition-colors">
+                            <img src="https://cdn.simpleicons.org/mysql/white"
+                                class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity" alt="MySQL">
+                            <span class="text-xs font-medium">MySQL</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-white/80 hover:text-white transition-colors">
+                            <img src="https://cdn.simpleicons.org/docker/white"
+                                class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity" alt="Docker">
+                            <span class="text-xs font-medium">Docker</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-white/80 hover:text-white transition-colors">
+                            <img src="https://cdn.simpleicons.org/git/white"
+                                class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity" alt="Git">
+                            <span class="text-xs font-medium">Git</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-white/80 hover:text-white transition-colors">
+                            <img src="https://cdn.simpleicons.org/github/white"
+                                class="w-5 h-5 opacity-70 group-hover:opacity-100 transition-opacity" alt="GitHub">
+                            <span class="text-xs font-medium">GitHub</span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- 6. iOS Audio Player (Right) -->
+                <div class="card glass rounded-4xl p-6 flex flex-col justify-between group relative overflow-hidden"
+                    id="music-player">
+                    <!-- Background Blur -->
+                    <div id="music-bg"
+                        class="absolute inset-0 bg-cover bg-center opacity-20 blur-xl group-hover:opacity-30 transition-opacity duration-700">
+                    </div>
+
+                    <!-- Header (SoundCloud & Up Next) -->
+                    <div class="relative z-10 flex justify-between items-start mb-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-white/10 overflow-hidden shadow-lg shrink-0">
+                                <img id="music-art" src="" class="w-full h-full object-cover">
+                            </div>
+                            <div class="min-w-0">
+                                <h3 id="music-title" class="font-bold text-sm leading-tight truncate pr-2">Loading...
+                                </h3>
+                                <p id="music-artist" class="text-xs text-white/60 truncate">...</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 shrink-0">
+                            <a href="https://on.soundcloud.com/8vW3gF5XxXFUZXOKrt" target="_blank"
+                                class="w-8 h-8 rounded-full bg-white/10 hover:bg-[#ff5500] flex items-center justify-center transition-colors group/sc"
+                                title="My SoundCloud">
+                                <img src="https://cdn.simpleicons.org/soundcloud/white"
+                                    class="w-4 h-4 opacity-70 group-hover/sc:opacity-100 transition-opacity">
                             </a>
+                            <button id="playlist-toggle"
+                                class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+                                title="Up Next">
+                                <i data-lucide="list-music" class="w-4 h-4 text-white"></i>
+                            </button>
                         </div>
                     </div>
-                </section>
-            </div>
-        </main>
-    </div>
 
-    <!-- Footer -->
-    <footer class="border-t border-white/5 mt-auto relative z-10 bg-neutral-900/30 backdrop-blur-md">
-        <div class="max-w-5xl mx-auto px-6 py-10 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="text-neutral-500 text-xs">
-                © 2025 Neo. All rights reserved.
-            </div>
-            <div class="flex gap-6 text-xs text-neutral-500">
-                <span class="flex items-center gap-1"><i data-lucide="code-2" class="w-3 h-3"></i> with <i
-                        data-lucide="heart" class="w-3 h-3 text-red-500/50 fill-current"></i> in Germany</span>
+                    <!-- Playlist Overlay (Hidden) -->
+                    <div id="playlist-overlay"
+                        class="absolute inset-0 z-20 bg-[#050505]/95 backdrop-blur-xl p-6 translate-y-full transition-transform duration-300 flex flex-col">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="text-sm font-bold text-white">Up Next</h4>
+                            <button id="playlist-close" class="text-white/50 hover:text-white">
+                                <i data-lucide="chevron-down" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                        <div id="playlist-items" class="flex-1 overflow-y-auto space-y-2 pr-2 custom-scrollbar">
+                            <!-- Items injected via JS -->
+                        </div>
+                    </div>
+
+                    <!-- Controls -->
+                    <div class="relative z-10 mt-auto">
+                        <!-- Time & Progress -->
+                        <div class="flex justify-between text-[10px] text-white/50 font-medium mb-1.5 px-1">
+                            <span id="music-current">0:00</span>
+                            <span id="music-total">0:00</span>
+                        </div>
+                        <div class="w-full bg-white/10 h-1 rounded-full mb-4 cursor-pointer group/progress"
+                            id="progress-container">
+                            <div id="progress-bar" class="h-full bg-white w-0 rounded-full relative">
+                                <div
+                                    class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover/progress:opacity-100 transition-opacity shadow-lg scale-0 group-hover/progress:scale-100 duration-200">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Main Controls -->
+                        <div class="flex items-center justify-between">
+                            <!-- Volume -->
+                            <div class="flex items-center gap-2 group/vol w-24">
+                                <button id="mute-btn" class="text-white/70 hover:text-white">
+                                    <i data-lucide="volume-2" class="w-4 h-4"></i>
+                                </button>
+                                <div class="flex-1 h-1 bg-white/10 rounded-full cursor-pointer" id="vol-container">
+                                    <div id="vol-bar" class="h-full bg-white/70 w-1/2 rounded-full relative"></div>
+                                </div>
+                            </div>
+
+                            <!-- Playback -->
+                            <div class="flex items-center gap-4">
+                                <button id="prev-btn" class="text-white/70 hover:text-white transition-colors">
+                                    <i data-lucide="skip-back" class="w-5 h-5 fill-current"></i>
+                                </button>
+                                <button id="play-btn"
+                                    class="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 transition-transform">
+                                    <i data-lucide="play" class="w-5 h-5 fill-current ml-0.5"></i>
+                                </button>
+                                <button id="next-btn" class="text-white/70 hover:text-white transition-colors">
+                                    <i data-lucide="skip-forward" class="w-5 h-5 fill-current"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
-    </footer>
 
-    <script>
-        lucide.createIcons();
-    </script>
+        <!-- Work View (Hidden Initially) -->
+        <div id="work-view" class="hidden view-container pt-10 px-4 md:px-6">
+            <h1 class="text-4xl font-bold mb-10 pl-2">Selected Works</h1>
 
+            <!-- Background Blur Overlay (for Folder Open) -->
+            <div id="folder-blur-overlay"
+                class="fixed inset-0 z-40 bg-black/60 backdrop-blur-lg opacity-0 pointer-events-none transition-all duration-500">
+            </div>
+
+            <!-- Slide-Out Sub-Card Container (for Folder Open) -->
+            <div id="folder-sub-cards"
+                class="fixed inset-0 z-50 flex items-center justify-center gap-6 p-8 opacity-0 pointer-events-none transition-all duration-500 scale-95">
+                <!-- Sub-Card 1: Tampermonkey Script -->
+                <a href="projects/lunar-geoguessr-script.html"
+                    class="sub-card w-48 aspect-square bg-[#16161E]/95 backdrop-blur-xl rounded-[2rem] border border-white/10 flex flex-col items-center justify-center p-6 cursor-pointer hover:scale-105 hover:border-[#7C3AED]/50 transition-all shadow-2xl"
+                    data-project="lunar-script">
+                    <div class="w-20 h-20 rounded-2xl bg-[#7C3AED]/20 flex items-center justify-center mb-4">
+                        <i data-lucide="file-code-2" class="w-10 h-10 text-[#A78BFA]"></i>
+                    </div>
+                    <h3 class="text-white font-semibold text-sm text-center">Tampermonkey Script</h3>
+                    <p class="text-white/40 text-[10px] mt-1">v3.2.1</p>
+                </a>
+
+                <!-- Sub-Card 2: Discord Bot -->
+                <a href="projects/lunar-geoguessr-bot.html"
+                    class="sub-card w-48 aspect-square bg-[#16161E]/95 backdrop-blur-xl rounded-[2rem] border border-white/10 flex flex-col items-center justify-center p-6 cursor-pointer hover:scale-105 hover:border-blue-500/50 transition-all shadow-2xl"
+                    data-project="lunar-bot">
+                    <div class="w-20 h-20 rounded-2xl bg-blue-500/20 flex items-center justify-center mb-4">
+                        <i data-lucide="bot" class="w-10 h-10 text-blue-400"></i>
+                    </div>
+                    <h3 class="text-white font-semibold text-sm text-center">Discord Bot</h3>
+                    <p class="text-white/40 text-[10px] mt-1">Community Bot</p>
+                </a>
+
+                <!-- Close Button -->
+                <button id="close-folder-overlay"
+                    class="absolute top-8 right-8 w-12 h-12 rounded-full bg-white/10 backdrop-blur-xl border border-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
+                    <i data-lucide="x" class="w-6 h-6 text-white"></i>
+                </button>
+            </div>
+
+            <!-- 3-Column Square Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8" id="projects-grid">
+
+                <!-- 1. Lunar GeoGuessr (FOLDER) -->
+                <div class="project-folder aspect-square glass rounded-[2rem] p-6 flex flex-col items-center justify-center cursor-pointer group border border-white/5 hover:border-[#7C3AED]/30 hover:bg-white/5 transition-all relative overflow-hidden"
+                    id="folder-lunar">
+                    <!-- Folder Icon Stack -->
+                    <div class="relative w-16 h-16 md:w-20 md:h-20 mb-3">
+                        <!-- Folder Back -->
+                        <div class="absolute inset-0 bg-[#7C3AED]/30 rounded-xl transform rotate-[-6deg] scale-95">
+                        </div>
+                        <!-- Folder Front -->
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-[#7C3AED] to-[#A78BFA] rounded-xl flex items-center justify-center shadow-lg">
+                            <i data-lucide="moon" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <!-- Badge -->
+                        <div
+                            class="absolute -bottom-1 -right-1 w-6 h-6 bg-red-500 rounded-full border-2 border-[#050505] flex items-center justify-center text-[10px] font-bold text-white">
+                            2</div>
+                    </div>
+                    <h3 class="text-white font-semibold text-sm text-center">Lunar GeoGuessr</h3>
+                    <p class="text-white/40 text-[10px] mt-1">Folder</p>
+                </div>
+
+                <!-- 2. Riot API -->
+                <a href="projects/riot_api.html"
+                    class="project-card aspect-square glass rounded-[2rem] p-6 flex flex-col items-center justify-center cursor-pointer group border border-white/5 hover:border-blue-500/30 hover:bg-white/5 transition-all">
+                    <div
+                        class="w-16 h-16 md:w-20 md:h-20 rounded-xl bg-gradient-to-br from-blue-500 to-sky-400 flex items-center justify-center mb-3 shadow-lg group-hover:scale-105 transition-transform">
+                        <i data-lucide="search" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-white font-semibold text-sm text-center">Riot API Lookup</h3>
+                    <p class="text-white/40 text-[10px] mt-1">JavaScript • Web</p>
+                </a>
+
+                <!-- 3. Eclipse Client -->
+                <a href="projects/eclipse.html"
+                    class="project-card aspect-square glass rounded-[2rem] p-6 flex flex-col items-center justify-center cursor-pointer group border border-white/5 hover:border-red-500/30 hover:bg-white/5 transition-all relative overflow-hidden">
+                    <div
+                        class="absolute inset-0 bg-[url('assets/images/eclipse/eclipse_menu.png')] bg-cover bg-center opacity-40 blur-sm group-hover:opacity-50 transition-opacity">
+                    </div>
+                    <div
+                        class="w-16 h-16 md:w-20 md:h-20 rounded-xl bg-gradient-to-br from-red-600 to-orange-500 flex items-center justify-center mb-3 shadow-lg group-hover:scale-105 transition-transform relative z-10">
+                        <i data-lucide="box" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-white font-semibold text-sm text-center relative z-10">Eclipse Client</h3>
+                    <p class="text-white/40 text-[10px] mt-1 relative z-10">Kotlin • Fabric</p>
+                </a>
+
+                <!-- 4. MTRX WARE -->
+                <a href="projects/mtrx.html"
+                    class="project-card aspect-square glass rounded-[2rem] p-6 flex flex-col items-center justify-center cursor-pointer group border border-white/5 hover:border-teal-500/30 hover:bg-white/5 transition-all">
+                    <div
+                        class="w-16 h-16 md:w-20 md:h-20 rounded-xl bg-gradient-to-br from-teal-500 to-cyan-400 flex items-center justify-center mb-3 shadow-lg group-hover:scale-105 transition-transform">
+                        <i data-lucide="shield" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-white font-semibold text-sm text-center">MTRX WARE</h3>
+                    <p class="text-white/40 text-[10px] mt-1">C# • ImGui</p>
+                </a>
+
+                <!-- 5. Straftat.cc -->
+                <a href="projects/straftat.html"
+                    class="project-card aspect-square glass rounded-[2rem] p-6 flex flex-col items-center justify-center cursor-pointer group border border-white/5 hover:border-indigo-500/30 hover:bg-white/5 transition-all">
+                    <div
+                        class="w-16 h-16 md:w-20 md:h-20 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center mb-3 shadow-lg group-hover:scale-105 transition-transform">
+                        <i data-lucide="cpu" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-white font-semibold text-sm text-center">straftat.cc</h3>
+                    <p class="text-white/40 text-[10px] mt-1">C# • Unity</p>
+                </a>
+
+                <!-- 6. Snake Gambling -->
+                <a href="projects/snake.html"
+                    class="project-card aspect-square glass rounded-[2rem] p-6 flex flex-col items-center justify-center cursor-pointer group border border-white/5 hover:border-green-500/30 hover:bg-white/5 transition-all">
+                    <div
+                        class="w-16 h-16 md:w-20 md:h-20 rounded-xl bg-gradient-to-br from-green-500 to-emerald-400 flex items-center justify-center mb-3 shadow-lg group-hover:scale-105 transition-transform">
+                        <i data-lucide="gamepad-2" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-white font-semibold text-sm text-center">Snake Gambling</h3>
+                    <p class="text-white/40 text-[10px] mt-1">Python • Pygame</p>
+                </a>
+
+                <!-- 7. Lunar Forum -->
+                <a href="projects/lunar_forum.html"
+                    class="project-card aspect-square glass rounded-[2rem] p-6 flex flex-col items-center justify-center cursor-pointer group border border-white/5 hover:border-purple-500/30 hover:bg-white/5 transition-all">
+                    <div
+                        class="w-16 h-16 md:w-20 md:h-20 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mb-3 shadow-lg group-hover:scale-105 transition-transform">
+                        <i data-lucide="message-square" class="w-8 h-8 text-white"></i>
+                    </div>
+                    <h3 class="text-white font-semibold text-sm text-center">Lunar Forum</h3>
+                    <p class="text-white/40 text-[10px] mt-1">TypeScript • MongoDB</p>
+                </a>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Scripts -->
+    <script src="js/app.js"></script>
 </body>
 
 </html>

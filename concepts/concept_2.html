@@ -1,0 +1,333 @@
+<html lang="en" class="dark"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Custom scrollbar to match the dark theme */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #09090b; }
+        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+    </style>
+</head>
+<body class="bg-black text-zinc-400 antialiased selection:bg-white/20 selection:text-white min-h-screen flex items-center justify-center p-4 lg:p-8">
+
+    <!-- Main Container -->
+    <div class="max-w-[1400px] w-full mx-auto flex flex-col lg:flex-row gap-6">
+
+        <!-- Sidebar / Profile Panel -->
+        <aside class="w-full lg:w-72 shrink-0 flex flex-col gap-4">
+            
+            <!-- Branding / Profile Card -->
+            <div class="bg-zinc-900/50 border border-white/10 rounded-2xl p-6 relative overflow-hidden group backdrop-blur-sm">
+                
+                <div class="flex flex-col items-center text-center mt-2">
+                    <div class="relative">
+                        <div class="w-20 h-20 rounded-full bg-zinc-800 p-1 mb-4 border border-white/10">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" alt="Profile" class="w-full h-full rounded-full bg-zinc-950 grayscale opacity-80">
+                        </div>
+                        <div class="absolute bottom-4 right-0 w-5 h-5 bg-black rounded-full flex items-center justify-center border border-zinc-800">
+                            <div class="w-2.5 h-2.5 bg-emerald-500 rounded-full"></div>
+                        </div>
+                    </div>
+                    
+                    <h1 class="text-xl font-semibold text-zinc-100 tracking-tight mb-1">Alex.dev</h1>
+                    <p class="text-sm text-zinc-500 font-medium">Product Engineer</p>
+
+                    <!-- Status Pill -->
+                    <div class="mt-6 w-full bg-zinc-900/50 rounded-lg p-2.5 flex items-center gap-3 border border-white/5 hover:border-white/10 transition-colors">
+                        <div class="w-8 h-8 rounded-md bg-zinc-800 flex items-center justify-center text-zinc-200">
+                            <i data-lucide="command" class="w-4 h-4"></i>
+                        </div>
+                        <div class="flex flex-col items-start">
+                            <span class="text-xs font-medium text-zinc-200">Available</span>
+                            <span class="text-[10px] text-zinc-500 uppercase tracking-wide">Projects</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Panel (Preserved Structure) -->
+            <nav class="bg-zinc-900/30 border border-white/10 rounded-2xl p-3 flex-1 h-full min-h-[350px] flex flex-col justify-between">
+                <ul class="space-y-1">
+                    <li>
+                        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-zinc-800 text-zinc-100 border border-white/5 transition-all shadow-sm">
+                            <i data-lucide="layout-grid" class="w-4 h-4 text-zinc-400"></i>
+                            <span class="text-sm font-medium">Overview</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-zinc-800/50 hover:text-zinc-200 transition-colors group text-zinc-500">
+                            <i data-lucide="layers" class="w-4 h-4 group-hover:text-zinc-300 transition-colors"></i>
+                            <span class="text-sm font-medium">Stack</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-zinc-800/50 hover:text-zinc-200 transition-colors group text-zinc-500">
+                            <i data-lucide="briefcase" class="w-4 h-4 group-hover:text-zinc-300 transition-colors"></i>
+                            <span class="text-sm font-medium">Projects</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-zinc-800/50 hover:text-zinc-200 transition-colors group text-zinc-500">
+                            <i data-lucide="pen-tool" class="w-4 h-4 group-hover:text-zinc-300 transition-colors"></i>
+                            <span class="text-sm font-medium">Writing</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <div class="mt-8 px-2 pb-2">
+                    <p class="text-[10px] font-medium text-zinc-600 uppercase tracking-widest mb-3 pl-1">Connect</p>
+                    <div class="flex gap-2">
+                        <a href="#" class="p-2.5 bg-zinc-900 rounded-lg text-zinc-500 hover:text-zinc-100 hover:bg-zinc-800 border border-transparent hover:border-zinc-700 transition-all"><i data-lucide="github" class="w-4 h-4"></i></a>
+                        <a href="#" class="p-2.5 bg-zinc-900 rounded-lg text-zinc-500 hover:text-zinc-100 hover:bg-zinc-800 border border-transparent hover:border-zinc-700 transition-all"><i data-lucide="twitter" class="w-4 h-4"></i></a>
+                        <a href="#" class="p-2.5 bg-zinc-900 rounded-lg text-zinc-500 hover:text-zinc-100 hover:bg-zinc-800 border border-transparent hover:border-zinc-700 transition-all"><i data-lucide="mail" class="w-4 h-4"></i></a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col gap-4">
+            
+            <!-- Top Bar (Search & Tabs) -->
+            <div class="flex flex-col md:flex-row gap-4 items-center justify-between bg-zinc-900/30 border border-white/10 rounded-2xl p-2 pl-3 backdrop-blur-sm">
+                <div class="flex items-center gap-2 text-sm text-zinc-500">
+                    <span class="flex items-center gap-2"><div class="w-2 h-2 bg-zinc-600 rounded-full"></div> PST 10:42 AM</span>
+                </div>
+                
+                <div class="relative w-full md:w-64">
+                    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600"></i>
+                    <input type="text" placeholder="Search..." class="w-full bg-zinc-950/50 border border-white/5 rounded-lg py-2 pl-9 pr-4 text-xs text-zinc-200 focus:outline-none focus:border-zinc-700 focus:ring-1 focus:ring-zinc-700 transition-all placeholder:text-zinc-700">
+                    <div class="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
+                        <kbd class="hidden sm:inline-block bg-zinc-900 border border-zinc-800 rounded px-1.5 text-[10px] text-zinc-500">⌘</kbd>
+                        <kbd class="hidden sm:inline-block bg-zinc-900 border border-zinc-800 rounded px-1.5 text-[10px] text-zinc-500">K</kbd>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bento Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                <!-- Hero / Introduction Card -->
+                <div class="md:col-span-2 bg-zinc-900/30 border border-white/10 rounded-2xl p-8 flex flex-col justify-between group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-8 opacity-20 group-hover:opacity-40 transition-opacity">
+                         <i data-lucide="fingerprint" class="w-32 h-32 text-zinc-700"></i>
+                    </div>
+
+                    <div class="relative z-10">
+                        <div class="flex items-center gap-2 mb-6">
+                            <span class="px-2 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-medium text-zinc-300 uppercase tracking-wider">Bio</span>
+                        </div>
+                        <h2 class="text-3xl font-semibold text-zinc-100 mb-4 tracking-tight leading-snug">
+                            Building digital experiences that <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-zinc-400 to-zinc-600">scale seamlessly.</span>
+                        </h2>
+                        <p class="text-sm text-zinc-500 max-w-md leading-relaxed">
+                            Focused on performance, accessibility, and design systems. Currently architecting SaaS solutions for the modern web.
+                        </p>
+                    </div>
+                    <div class="mt-8 flex gap-3 relative z-10">
+                        <button class="bg-zinc-100 text-black px-5 py-2.5 rounded-lg font-medium text-xs hover:bg-zinc-200 transition-colors">Download CV</button>
+                        <button class="bg-transparent text-zinc-300 border border-zinc-800 px-5 py-2.5 rounded-lg font-medium text-xs hover:bg-zinc-900 hover:text-white transition-colors">Copy Email</button>
+                    </div>
+                </div>
+
+                <!-- Stats / Skills (Sliders) -->
+                <div class="bg-zinc-900/30 border border-white/10 rounded-2xl p-6 flex flex-col justify-center gap-6">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm font-medium text-zinc-200">Core Stack</h3>
+                        <i data-lucide="bar-chart-2" class="w-4 h-4 text-zinc-600"></i>
+                    </div>
+
+                    <!-- Skill Slider 1 -->
+                    <div class="group">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-xs font-medium text-zinc-500 group-hover:text-zinc-300 transition-colors">Frontend Architecture</span>
+                        </div>
+                        <div class="h-2 bg-zinc-900 rounded-full border border-white/5 relative overflow-hidden">
+                            <div class="absolute h-full w-[92%] bg-zinc-200 rounded-full"></div>
+                        </div>
+                    </div>
+
+                    <!-- Skill Slider 2 -->
+                    <div class="group">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-xs font-medium text-zinc-500 group-hover:text-zinc-300 transition-colors">Backend / Systems</span>
+                        </div>
+                        <div class="h-2 bg-zinc-900 rounded-full border border-white/5 relative overflow-hidden">
+                            <div class="absolute h-full w-[85%] bg-zinc-500 rounded-full"></div>
+                        </div>
+                    </div>
+
+                    <!-- Skill Slider 3 -->
+                    <div class="group">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-xs font-medium text-zinc-500 group-hover:text-zinc-300 transition-colors">Design Engineering</span>
+                        </div>
+                        <div class="h-2 bg-zinc-900 rounded-full border border-white/5 relative overflow-hidden">
+                            <div class="absolute h-full w-[98%] bg-zinc-200 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Featured Project Card -->
+                <div class="md:col-span-3 bg-zinc-900/30 border border-white/10 rounded-2xl overflow-hidden group">
+                    <div class="px-6 py-3 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
+                        <div class="flex items-center gap-2">
+                             <div class="flex gap-1.5">
+                                <div class="w-2.5 h-2.5 rounded-full bg-zinc-800 border border-zinc-700"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-zinc-800 border border-zinc-700"></div>
+                                <div class="w-2.5 h-2.5 rounded-full bg-zinc-800 border border-zinc-700"></div>
+                            </div>
+                            <span class="text-xs font-mono text-zinc-500 ml-2">platform-analytics</span>
+                        </div>
+                        <div class="px-2 py-0.5 rounded border border-emerald-500/20 bg-emerald-500/10 text-[10px] text-emerald-500 font-medium">Production</div>
+                    </div>
+                    
+                    <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Project Details (Left) -->
+                        <div class="md:col-span-2 space-y-4">
+                            <div class="bg-black/40 rounded-xl p-5 border border-white/5 hover:border-white/10 transition-colors">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div class="flex flex-col">
+                                        <h4 class="text-lg font-medium text-zinc-100 mb-1">Financial Data Dashboard</h4>
+                                        <p class="text-xs text-zinc-500">Real-time visualization engine</p>
+                                    </div>
+                                    <i data-lucide="arrow-up-right" class="w-4 h-4 text-zinc-600"></i>
+                                </div>
+                                <p class="text-sm text-zinc-400 leading-relaxed mb-4">
+                                    A high-throughput analytics platform capable of rendering millions of data points with zero lag. Optimized utilizing WebGL and Rust WASM modules.
+                                </p>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-2 py-1 bg-zinc-900 text-[10px] font-medium text-zinc-400 rounded border border-zinc-800">React 18</span>
+                                    <span class="px-2 py-1 bg-zinc-900 text-[10px] font-medium text-zinc-400 rounded border border-zinc-800">Next.js</span>
+                                    <span class="px-2 py-1 bg-zinc-900 text-[10px] font-medium text-zinc-400 rounded border border-zinc-800">Postgres</span>
+                                </div>
+                            </div>
+
+                            <!-- Metrics Row -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-black/40 rounded-xl p-4 border border-white/5 flex items-center gap-4">
+                                    <div class="p-2.5 rounded-lg bg-zinc-900 text-zinc-400 border border-zinc-800"><i data-lucide="activity" class="w-4 h-4"></i></div>
+                                    <div>
+                                        <div class="text-lg font-semibold text-zinc-200">99.9%</div>
+                                        <div class="text-[10px] text-zinc-500 uppercase tracking-wide">Uptime</div>
+                                    </div>
+                                </div>
+                                <div class="bg-black/40 rounded-xl p-4 border border-white/5 flex items-center gap-4">
+                                    <div class="p-2.5 rounded-lg bg-zinc-900 text-zinc-400 border border-zinc-800"><i data-lucide="zap" class="w-4 h-4"></i></div>
+                                    <div>
+                                        <div class="text-lg font-semibold text-zinc-200">&lt;50ms</div>
+                                        <div class="text-[10px] text-zinc-500 uppercase tracking-wide">Query Time</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Config Style Interaction (Right) -->
+                        <div class="bg-black/40 rounded-xl p-5 border border-white/5 flex flex-col gap-5">
+                            <div class="flex items-center justify-between text-xs text-zinc-500 pb-2 border-b border-white/5">
+                                <span>Settings</span>
+                                <i data-lucide="sliders" class="w-3 h-3"></i>
+                            </div>
+                            
+                            <!-- Toggle Item -->
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-medium text-zinc-400">Notifications</span>
+                                <div class="w-9 h-5 bg-zinc-200 rounded-full relative cursor-pointer">
+                                    <div class="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full shadow-sm"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Toggle Item 2 -->
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-medium text-zinc-400">Dark Mode</span>
+                                <div class="w-9 h-5 bg-zinc-800 rounded-full relative cursor-pointer border border-zinc-700">
+                                    <div class="absolute left-0.5 top-0.5 w-4 h-4 bg-zinc-500 rounded-full"></div>
+                                </div>
+                            </div>
+
+                            <!-- Slider Item -->
+                            <div class="space-y-2 mt-1">
+                                <div class="flex justify-between text-[10px]">
+                                    <span class="text-zinc-500">Density</span>
+                                    <span class="text-zinc-400">Compact</span>
+                                </div>
+                                <div class="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+                                    <div class="h-full w-2/3 bg-zinc-500 rounded-full"></div>
+                                </div>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="mt-auto pt-2 flex gap-2">
+                                <button class="flex-1 py-1.5 bg-white text-black text-xs font-medium rounded-md hover:bg-zinc-200 transition-colors">View</button>
+                                <button class="flex-1 py-1.5 bg-transparent text-zinc-400 text-xs font-medium rounded-md border border-zinc-800 hover:text-white transition-colors">Edit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Secondary Project / Service -->
+                <div class="bg-zinc-900/30 border border-white/10 rounded-2xl p-6 group hover:border-zinc-700 transition-all">
+                    <div class="w-10 h-10 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-200 mb-5 group-hover:bg-white group-hover:text-black transition-all duration-300">
+                        <i data-lucide="component" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-zinc-200 mb-2">Design Systems</h3>
+                    <p class="text-zinc-500 mb-6 text-xs leading-relaxed">
+                        A collection of accessible, headless UI primitives built for rapid prototyping.
+                    </p>
+                    <a href="#" class="inline-flex items-center text-xs font-medium text-zinc-300 hover:text-white transition-colors">
+                        Documentation <i data-lucide="arrow-right" class="w-3 h-3 ml-1.5 opacity-50"></i>
+                    </a>
+                </div>
+
+                <!-- Blog / Writing -->
+                <div class="bg-zinc-900/30 border border-white/10 rounded-2xl p-6 group hover:border-zinc-700 transition-all">
+                    <div class="w-10 h-10 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-200 mb-5 group-hover:bg-white group-hover:text-black transition-all duration-300">
+                        <i data-lucide="book-open" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-zinc-200 mb-2">Technical Writing</h3>
+                    <p class="text-zinc-500 mb-6 text-xs leading-relaxed">
+                        Thoughts on software architecture, state management, and the future of web dev.
+                    </p>
+                    <a href="#" class="inline-flex items-center text-xs font-medium text-zinc-300 hover:text-white transition-colors">
+                        Read Articles <i data-lucide="arrow-right" class="w-3 h-3 ml-1.5 opacity-50"></i>
+                    </a>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="md:col-span-1 bg-zinc-900/30 border border-white/10 rounded-2xl p-6 flex flex-col justify-center">
+                    <h3 class="text-base font-medium text-zinc-200 mb-4">Contact</h3>
+                    <form class="space-y-3">
+                        <div>
+                            <input type="email" placeholder="Email address" class="w-full bg-black/50 border border-white/5 rounded-lg py-2.5 px-3 text-xs text-zinc-200 focus:outline-none focus:border-zinc-600 transition-all placeholder:text-zinc-700">
+                        </div>
+                        <button class="w-full bg-zinc-100 hover:bg-white text-black text-xs font-medium py-2.5 rounded-lg transition-all">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+            
+            <!-- Footer -->
+            <footer class="mt-4 flex justify-between items-center text-zinc-600 text-[10px] uppercase tracking-wider px-2">
+                <p>© 2024 Alex.</p>
+                <div class="flex gap-4">
+                    <span class="hover:text-zinc-400 cursor-pointer transition-colors">Legal</span>
+                    <span class="hover:text-zinc-400 cursor-pointer transition-colors">Privacy</span>
+                </div>
+            </footer>
+
+        </main>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+
+</body></html>

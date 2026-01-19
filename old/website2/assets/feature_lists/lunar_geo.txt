@@ -1,0 +1,29 @@
+Lunar GeoGuessr Script / Javascript
+
+Location
+Location display (Country, State, City, Map)
+Open Google Maps
+Open PlonkIT
+Read Location (TTS)
+Send Location to Discord Webhook
+
+
+HUD
+Watermark
+Classic map timer
+hotkey display
+
+Auto Play
+Auto Play Hud
+Guess Mode (Region, Country, Random)
+Place Marker Delay (Min / Max)
+Sleep Mode (Minutes before Sleep)
+Max Games setting
+
+
+Misc
+hotkey system
+Internal Logs
+3 Geo-Reverse API's
+Menu Color Customization
+Themes

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neo — Eclipse Client</title>
+    <title>Neo — Lunar Geoguessr Script</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
@@ -63,21 +63,21 @@
         <div class="flex flex-col md:flex-row items-start gap-8 mb-16">
             <div
                 class="w-24 h-24 rounded-[2rem] bg-[#1C1C1E] border border-white/10 flex items-center justify-center shrink-0 shadow-2xl">
-                <i data-lucide="layers" class="w-12 h-12 text-purple-400 fill-current"></i>
+                <img src="../assets/images/lunar_kawaii_moon_dark_bg.webp" alt="Lunar Icon"
+                    class="w-14 h-14 object-contain">
             </div>
             <div class="flex-1 pt-2">
-                <h1 class="text-5xl md:text-6xl font-bold text-white tracking-tight mb-4">Eclipse Client</h1>
-                <p class="text-xl text-neutral-400 font-medium max-w-2xl">Premium Minecraft Bedrock Edition Utility Mod
-                </p>
+                <h1 class="text-5xl md:text-6xl font-bold text-white tracking-tight mb-4">Lunar Script</h1>
+                <p class="text-xl text-neutral-400 font-medium max-w-2xl mb-8">The ultimate Geoguessr utility suite.</p>
 
-                <div class="flex flex-wrap gap-3 mt-6">
-                    <a href="https://discord.gg/eclipseclient" target="_blank"
+                <div class="flex flex-wrap gap-4">
+                    <a href="https://discord.gg/TmxEA7RTuQ" target="_blank"
                         class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#5865F2] text-white text-sm font-semibold hover:bg-[#4752C4] transition-colors">
                         <svg class="w-4 h-4 fill-current" viewBox="0 0 127.14 96.36">
                             <path
                                 d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.09,105.09,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.11,77.11,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22c1.24-23.28-13.26-47.5-18.9-72.15ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z" />
                         </svg>
-                        Join Discord
+                        Join Community
                     </a>
                 </div>
             </div>
@@ -89,7 +89,7 @@
             <!-- Main Screenshot (Span 8) -->
             <div class="md:col-span-8 space-y-8">
                 <div class="rounded-[2.5rem] overflow-hidden border border-white/10 bg-[#1C1C1E] shadow-2xl group">
-                    <img src="../assets/images/eclipse/eclipse_menu.png" alt="Eclipse Interface"
+                    <img src="../assets/images/lunar_geo/lunar_geo_menu.png" alt="Lunar Interface"
                         class="w-full h-auto transform transition-transform duration-700 group-hover:scale-[1.02]">
                 </div>
 
@@ -97,16 +97,32 @@
                 <div class="prose prose-invert max-w-none">
                     <h3 class="text-2xl font-bold text-white mb-4">Overview</h3>
                     <p class="text-neutral-400 text-lg leading-relaxed">
-                        Eclipse Client is a sophisticated utility mod for Minecraft Bedrock Edition. It enhances
-                        gameplay with a suite of quality-of-life features, performance optimizations, and a highly
-                        customizable user interface.
+                        Lunar is a comprehensive userscript designed to enhance the Geoguessr experience. By
+                        intercepting API calls, it enables certain features that give you an edge above others.
                     </p>
                 </div>
 
-                <!-- Secondary Screenshot -->
-                <div class="rounded-[2.5rem] overflow-hidden border border-white/10 bg-[#1C1C1E] shadow-2xl group">
-                    <img src="../assets/images/eclipse/eclipse_menu_2.png" alt="Eclipse HUD"
-                        class="w-full h-auto transform transition-transform duration-700 group-hover:scale-[1.02]">
+                <!-- Old Versions Gallery -->
+                <div>
+                    <h3 class="text-2xl font-bold text-white mb-6">Evolution</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="rounded-3xl overflow-hidden border border-white/5 bg-[#1C1C1E] group">
+                            <img src="../assets/images/lunar_geo/lunar_script_v1.png" alt="v1.0"
+                                class="w-full h-48 object-cover opacity-60 group-hover:opacity-100 transition-opacity">
+                            <div class="p-4">
+                                <span class="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Version
+                                    1.0</span>
+                            </div>
+                        </div>
+                        <div class="rounded-3xl overflow-hidden border border-white/5 bg-[#1C1C1E] group">
+                            <img src="../assets/images/lunar_geo/lunar_script_v2.png" alt="v2.0"
+                                class="w-full h-48 object-cover opacity-60 group-hover:opacity-100 transition-opacity">
+                            <div class="p-4">
+                                <span class="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Version
+                                    2.0</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -120,31 +136,43 @@
                         <li class="flex items-start gap-4">
                             <div
                                 class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center shrink-0 mt-1">
+                                <i data-lucide="map-pin" class="w-4 h-4 text-purple-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold">Location</h4>
+                                <p class="text-sm text-neutral-400 mt-1">Display Country, State, City, Map.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <div
+                                class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center shrink-0 mt-1">
+                                <i data-lucide="globe" class="w-4 h-4 text-purple-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold">Integration</h4>
+                                <p class="text-sm text-neutral-400 mt-1">Open Google Maps, PlonkIT.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-4">
+                            <div
+                                class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center shrink-0 mt-1">
                                 <i data-lucide="zap" class="w-4 h-4 text-purple-400"></i>
                             </div>
                             <div>
-                                <h4 class="text-white font-semibold">Performance</h4>
-                                <p class="text-sm text-neutral-400 mt-1">Optimized for high FPS and low latency.</p>
+                                <h4 class="text-white font-semibold">Automation</h4>
+                                <p class="text-sm text-neutral-400 mt-1">Auto Play, Guess Mode (Region/Country/Random).
+                                </p>
                             </div>
                         </li>
                         <li class="flex items-start gap-4">
                             <div
                                 class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center shrink-0 mt-1">
-                                <i data-lucide="palette" class="w-4 h-4 text-purple-400"></i>
+                                <i data-lucide="settings" class="w-4 h-4 text-purple-400"></i>
                             </div>
                             <div>
-                                <h4 class="text-white font-semibold">Customization</h4>
-                                <p class="text-sm text-neutral-400 mt-1">Fully customizable HUD and themes.</p>
-                            </div>
-                        </li>
-                        <li class="flex items-start gap-4">
-                            <div
-                                class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center shrink-0 mt-1">
-                                <i data-lucide="shield" class="w-4 h-4 text-purple-400"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-white font-semibold">Security</h4>
-                                <p class="text-sm text-neutral-400 mt-1">Built with safety and privacy in mind.</p>
+                                <h4 class="text-white font-semibold">Misc</h4>
+                                <p class="text-sm text-neutral-400 mt-1">Hotkey system, Themes, Menu Color
+                                    Customization.</p>
                             </div>
                         </li>
                     </ul>
@@ -155,11 +183,12 @@
                     <h3 class="text-xl font-bold text-white mb-6">Tech Stack</h3>
                     <div class="flex flex-wrap gap-2">
                         <span
-                            class="px-4 py-2 rounded-xl bg-white/5 border border-white/5 text-sm font-medium text-neutral-300">Kotlin</span>
+                            class="px-4 py-2 rounded-xl bg-white/5 border border-white/5 text-sm font-medium text-neutral-300">JavaScript</span>
                         <span
-                            class="px-4 py-2 rounded-xl bg-white/5 border border-white/5 text-sm font-medium text-neutral-300">Java</span>
+                            class="px-4 py-2 rounded-xl bg-white/5 border border-white/5 text-sm font-medium text-neutral-300">Tampermonkey</span>
                         <span
-                            class="px-4 py-2 rounded-xl bg-white/5 border border-white/5 text-sm font-medium text-neutral-300">NanoVG</span>
+                            class="px-4 py-2 rounded-xl bg-white/5 border border-white/5 text-sm font-medium text-neutral-300">DOM
+                            API</span>
                     </div>
                 </div>
 
