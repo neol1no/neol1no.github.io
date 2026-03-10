@@ -1,20 +1,14 @@
-// Initialize Lucide icons
 lucide.createIcons();
 
-// GSAP Animations
 gsap.registerPlugin(Flip, ScrollTrigger);
 
-// Navigation Logic
 const navPill = document.getElementById('nav-pill');
 const navLinks = document.querySelectorAll('.nav-link');
 const views = document.querySelectorAll('.view-container');
 const app = document.getElementById('app');
 
-// State
 let currentView = 'home';
 
-// Initial Animation
-// Initial Animation
 function animateCards() {
     gsap.fromTo('.card',
         { y: 50, opacity: 0 },
@@ -28,7 +22,6 @@ if (document.readyState === 'loading') {
     animateCards();
 }
 
-// Navigation Click Handler
 navLinks.forEach(link => {
     link.addEventListener('click', (e) => {
         e.preventDefault();
@@ -36,14 +29,12 @@ navLinks.forEach(link => {
 
         if (target === currentView) return;
 
-        // Update Pill Position
         const rect = link.getBoundingClientRect();
         const navRect = link.parentElement.getBoundingClientRect();
 
         navPill.style.width = `${rect.width}px`;
         navPill.style.transform = `translateX(${rect.left - navRect.left}px)`;
 
-        // Update Text Colors
         navLinks.forEach(l => {
             l.classList.remove('text-black');
             l.classList.add('text-white/60');
@@ -51,7 +42,6 @@ navLinks.forEach(link => {
         link.classList.remove('text-white/60');
         link.classList.add('text-black');
 
-        // Switch View
         switchView(target);
     });
 });
@@ -60,7 +50,6 @@ function switchView(view) {
     const currentViewEl = document.getElementById(`${currentView}-view`);
     const nextViewEl = document.getElementById(`${view}-view`);
 
-    // Fade out current
     gsap.to(currentViewEl, {
         opacity: 0,
         y: -20,
@@ -69,7 +58,6 @@ function switchView(view) {
             currentViewEl.classList.add('hidden');
             nextViewEl.classList.remove('hidden');
 
-            // Fade in next
             gsap.fromTo(nextViewEl, {
                 opacity: 0,
                 y: 20
@@ -85,7 +73,6 @@ function switchView(view) {
     });
 }
 
-// Time Update
 function updateTime() {
     const timeEl = document.getElementById('local-time');
     if (timeEl) {
@@ -100,7 +87,6 @@ function updateTime() {
 setInterval(updateTime, 1000);
 updateTime();
 
-// Discord Copy
 const discordBtn = document.getElementById('discord-btn');
 const discordTooltip = document.getElementById('discord-tooltip');
 
@@ -152,7 +138,7 @@ if (closeFolderBtn) {
     folderOverlay.addEventListener('click', closeFolder);
 }
 
-// --- MUSIC PLAYER LOGIC ---
+// MUSIC Player
 
 const songs = [
     {
@@ -178,9 +164,8 @@ const songs = [
 let currentSongIndex = 0;
 let isPlaying = false;
 const audio = new Audio();
-audio.volume = 0.5; // Default 50%
+audio.volume = 0.5;
 
-// DOM Elements
 const musicArt = document.getElementById('music-art');
 const musicBg = document.getElementById('music-bg');
 const musicTitle = document.getElementById('music-title');
@@ -200,7 +185,6 @@ const playlistOverlay = document.getElementById('playlist-overlay');
 const playlistClose = document.getElementById('playlist-close');
 const playlistItems = document.getElementById('playlist-items');
 
-// Load Song
 function loadSong(index) {
     const song = songs[index];
     musicTitle.textContent = song.title;
@@ -209,7 +193,6 @@ function loadSong(index) {
     musicBg.style.backgroundImage = `url('${song.art}')`;
     audio.src = song.src;
 
-    // Reset Progress
     progressBar.style.width = '0%';
     musicCurrent.textContent = '0:00';
     musicTotal.textContent = '0:00';
@@ -217,7 +200,6 @@ function loadSong(index) {
     updatePlaylistUI();
 }
 
-// Play/Pause
 function togglePlay() {
     if (isPlaying) {
         audio.pause();
@@ -230,7 +212,6 @@ function togglePlay() {
     lucide.createIcons();
 }
 
-// Next/Prev
 function nextSong() {
     currentSongIndex = (currentSongIndex + 1) % songs.length;
     loadSong(currentSongIndex);
@@ -243,7 +224,6 @@ function prevSong() {
     if (isPlaying) audio.play();
 }
 
-// Progress Bar
 function updateProgress(e) {
     const { duration, currentTime } = e.srcElement;
     if (isNaN(duration)) return;
@@ -251,7 +231,6 @@ function updateProgress(e) {
     const progressPercent = (currentTime / duration) * 100;
     progressBar.style.width = `${progressPercent}%`;
 
-    // Update Time Display
     musicCurrent.textContent = formatTime(currentTime);
     musicTotal.textContent = formatTime(duration);
 }
@@ -269,7 +248,6 @@ function formatTime(seconds) {
     return `${min}:${sec < 10 ? '0' : ''}${sec}`;
 }
 
-// Volume Control
 let isDraggingVolume = false;
 
 function setVolume(e) {
@@ -285,7 +263,6 @@ function setVolume(e) {
 function updateVolumeUI() {
     volBar.style.width = `${audio.volume * 100}%`;
 
-    // Update Icon
     if (audio.volume === 0) {
         muteBtn.innerHTML = '<i data-lucide="volume-x" class="w-4 h-4"></i>';
     } else if (audio.volume < 0.5) {
@@ -306,7 +283,6 @@ function toggleMute() {
     updateVolumeUI();
 }
 
-// Playlist Logic
 function togglePlaylist() {
     playlistOverlay.classList.toggle('translate-y-full');
 }
@@ -339,21 +315,19 @@ function updatePlaylistUI() {
     lucide.createIcons();
 }
 
-// Event Listeners
 playBtn.addEventListener('click', togglePlay);
 prevBtn.addEventListener('click', prevSong);
 nextBtn.addEventListener('click', nextSong);
 audio.addEventListener('timeupdate', updateProgress);
 audio.addEventListener('ended', nextSong);
 progressContainer.addEventListener('click', setProgress);
-// Volume Drag Events
 volContainer.addEventListener('mousedown', (e) => {
     isDraggingVolume = true;
     setVolume(e);
 });
 document.addEventListener('mousemove', (e) => {
     if (isDraggingVolume) {
-        e.preventDefault(); // Prevent selection
+        e.preventDefault();
         setVolume(e);
     }
 });
@@ -364,10 +338,8 @@ muteBtn.addEventListener('click', toggleMute);
 playlistToggle.addEventListener('click', togglePlaylist);
 playlistClose.addEventListener('click', togglePlaylist);
 
-// Init
 loadSong(currentSongIndex);
 updateVolumeUI();
-// --- FEATURED PROJECT CAROUSEL ---
 
 const featuredProjects = [
     {
@@ -404,22 +376,22 @@ const heroDots = document.getElementById('hero-dots');
 function updateHero(index) {
     const project = featuredProjects[index];
 
-    // Fade Out Text
+    
     gsap.to([heroTitle, heroDesc, heroLabel], {
         opacity: 0,
         y: -10,
         duration: 0.3,
         onComplete: () => {
-            // Update Content
+            
             heroTitle.textContent = project.title;
             heroDesc.textContent = project.desc;
             heroLabel.className = `text-sm font-medium mb-2 ${project.color}`;
             heroCard.href = project.link;
 
-            // Update Background
+            
             heroBg.style.backgroundImage = `url('${project.bg}')`;
 
-            // Fade In Text
+            
             gsap.to([heroTitle, heroDesc, heroLabel], {
                 opacity: 1,
                 y: 0,
@@ -429,7 +401,7 @@ function updateHero(index) {
         }
     });
 
-    // Update Dots
+    
     if (heroDots) {
         Array.from(heroDots.children).forEach((dot, i) => {
             if (i === index) {
@@ -446,5 +418,4 @@ function nextHero() {
     updateHero(currentHeroIndex);
 }
 
-// Auto Switch every 5 seconds
 setInterval(nextHero, 5000);
