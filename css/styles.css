@@ -10,12 +10,9 @@ body {
 html,
 body {
     scrollbar-width: none;
-    /* Firefox */
     -ms-overflow-style: none;
-    /* IE and Edge */
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
 html::-webkit-scrollbar,
 body::-webkit-scrollbar {
     display: none;
@@ -25,20 +22,15 @@ body::-webkit-scrollbar {
     display: none !important;
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
 .no-scrollbar::-webkit-scrollbar {
     display: none;
 }
 
-/* Hide scrollbar for IE, Edge and Firefox */
 .no-scrollbar {
     -ms-overflow-style: none;
-    /* IE and Edge */
     scrollbar-width: none;
-    /* Firefox */
 }
 
-/* Glassmorphism Utility */
 .glass {
     background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(16px);
@@ -47,7 +39,6 @@ body::-webkit-scrollbar {
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
-/* Prevent FOUC: Hide Home Cards initially */
 #home-view .card {
     opacity: 0;
 }
@@ -59,7 +50,6 @@ body::-webkit-scrollbar {
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
 
-/* Smooth Transition for all interactive elements */
 a,
 button,
 .card {
