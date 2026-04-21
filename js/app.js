@@ -56,6 +56,7 @@ function switchView(view) {
         duration: 0.3,
         onComplete: () => {
             currentViewEl.classList.add('hidden');
+            gsap.set(currentViewEl, { clearProps: 'transform,opacity' });
             nextViewEl.classList.remove('hidden');
 
             gsap.fromTo(nextViewEl, {
@@ -65,7 +66,8 @@ function switchView(view) {
                 opacity: 1,
                 y: 0,
                 duration: 0.4,
-                ease: 'power2.out'
+                ease: 'power2.out',
+                onComplete: () => gsap.set(nextViewEl, { clearProps: 'transform' })
             });
 
             currentView = view;
@@ -343,18 +345,18 @@ updateVolumeUI();
 
 const featuredProjects = [
     {
-        title: "Lunar GeoGuessr Script",
-        desc: "Advanced utility suite for Geoguessr players with location specs and automation.",
-        bg: "assets/images/geoguessr_logo_planet.jpg",
-        link: "projects/lunar-geoguessr-script.html",
-        color: "text-purple-400"
+        title: "Lunar Desktop",
+        desc: "Desktop app version of Lunar Script with stream proof overlay, full auth, and dashboard site.",
+        bg: "assets/images/lunar_geo/lunar_desktop_app_gui.png",
+        link: "projects/lunar-desktop.html",
+        color: "text-emerald-400"
     },
     {
         title: "Eclipse Client",
-        desc: "Premium Minecraft Bedrock Edition Utility Mod with high performance and customization.",
-        bg: "assets/images/eclipse/eclipse_menu.png",
-        link: "projects/eclipse.html",
-        color: "text-red-400"
+        desc: "1.21.11 hybrid and macro client with a NanoVG UI and visual-first ghost-hacking modules.",
+        bg: "assets/images/eclipse_client/gui_1.png",
+        link: "projects/eclipse-client.html",
+        color: "text-fuchsia-400"
     },
     {
         title: "Riot API Lookup",
